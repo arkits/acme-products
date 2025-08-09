@@ -1,4 +1,4 @@
-import { useOutletContext } from "react-router-dom";
+import { Link, useOutletContext } from "react-router-dom";
 import { useMemo, useState } from "react";
 import type { ProductOutletContext } from "./ProductDetail";
 import type { Owner } from "../types";
@@ -202,7 +202,11 @@ export default function ProductOverview() {
           {product.dataSources.length > 0 ? (
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {product.dataSources.map((ds) => (
-                <div key={ds.id} className="rounded-lg glass p-3 overflow-hidden">
+                <Link
+                  to={`/product/${product.id}/sources/${ds.id}`}
+                  key={ds.id}
+                  className="rounded-lg glass glass-hover p-3 overflow-hidden cursor-pointer transition-colors"
+                >
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
                       <div className="text-sm font-medium text-white truncate" title={ds.name}>{ds.name}</div>
@@ -223,7 +227,7 @@ export default function ProductOverview() {
                   <div className="mt-2 text-xs text-zinc-500">
                     {ds.schema?.objects?.length || 0} objects
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           ) : (

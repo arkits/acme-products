@@ -354,10 +354,12 @@ function CodeBlock({ code, language }: { code: string; language?: string }) {
   const hljsLanguageClass = `language-${mapLanguageToHljs(language)}`;
 
   return (
-    <pre className="overflow-auto p-3 text-xs text-zinc-200">
-      <code ref={codeElementRef} className={hljsLanguageClass}>
-        {code}
-      </code>
-    </pre>
+    <div className="code-block rounded-md overflow-hidden">
+      <pre className="w-full m-0 p-3 text-xs text-zinc-200 font-mono overflow-auto">
+        <code ref={codeElementRef} className={hljsLanguageClass}>
+          {code}
+        </code>
+      </pre>
+    </div>
   );
 }

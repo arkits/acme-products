@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 
 export default function Layout({ children }: { children: ReactNode }) {
   const location = useLocation();
-  const isObjectsPage = location.pathname.startsWith("/objects");
+  const isObjectsPage = location.pathname.startsWith("/data-dictionary");
   return (
     <div className="min-h-screen">
       <header className="sticky top-0 z-30 glass-strong">
@@ -14,7 +14,7 @@ export default function Layout({ children }: { children: ReactNode }) {
           </Link>
           <nav className="flex items-center gap-6 text-sm">
             <NavLink to="/" end className={({ isActive }) => `${isActive ? "text-white" : "text-zinc-400 hover:text-zinc-200"}`}>Data Products</NavLink>
-            <NavLink to="/objects" className={({ isActive }) => `${isActive ? "text-white" : "text-zinc-400 hover:text-zinc-200"}`}>Data Dictionary</NavLink>
+            <NavLink to="/data-dictionary" className={({ isActive }) => `${isActive ? "text-white" : "text-zinc-400 hover:text-zinc-200"}`}>Data Dictionary</NavLink>
             <NavLink to="/settings" className={({ isActive }) => `${isActive ? "text-white" : "text-zinc-400 hover:text-zinc-200"}`}>Settings</NavLink>
           </nav>
         </div>

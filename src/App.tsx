@@ -26,7 +26,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Browse />} />
           <Route path="/new" element={<NewProduct />} />
-          <Route path="/objects" element={<ObjectsGraph />} />
+          <Route path="/data-dictionary" element={<ObjectsGraph />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/product/:id" element={<ProductDetail />}>
             <Route index element={<ProductOverview />} />

@@ -91,6 +91,11 @@ body {
   border: 1px solid var(--border);
 }
 
+/* Ensure the padded area inside code blocks uses a solid dark background */
+.code-block pre {
+  background: #0D1117;
+}
+
 /* Nice scrollbar for dark mode */
 * { scrollbar-color: rgb(71 85 105) transparent; }
 ::-webkit-scrollbar { height: 10px; width: 10px; }

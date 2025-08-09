@@ -37,9 +37,9 @@ export default function ProductDetail() {
       <div>
         <div className="border-b border-zinc-800/60">
           <div className="-mb-px flex items-center gap-6 overflow-x-auto">
-            <TabLink to="" label="Overview" />
+            <TabLink to="" label="Overview" end />
             <TabLink to="business-needs" label="Business Needs" />
-            <TabLink to="sources" label="Sources" />
+            <TabLink to="sources" label="Sources" end={false} />
             <TabLink to="data-dictionary" label="Data Dictionary" />
             <TabLink to="usage-examples" label="Usage Examples" />
           </div>
@@ -52,12 +52,12 @@ export default function ProductDetail() {
   );
 }
 
-function TabLink({ to, label }: { to: string; label: string }) {
+function TabLink({ to, label, end = true }: { to: string; label: string; end?: boolean }) {
   return (
     <NavLink
       to={to}
       className={({ isActive }) => `${isActive ? "tab-link tab-link-active" : "tab-link"}`}
-      end
+      end={end}
     >
       {label}
     </NavLink>
