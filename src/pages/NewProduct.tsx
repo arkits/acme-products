@@ -97,18 +97,14 @@ export default function NewProduct() {
               </div>
               <span className="rounded-md btn-ghost px-2.5 py-1 text-xs">{draft.lineOfBusiness || "LOB"}</span>
             </div>
-            <div className="mt-4 grid grid-cols-3 gap-4 text-sm">
-              <div className="rounded-md bg-zinc-900/40 p-3">
-                <div className="text-zinc-400">Sources</div>
-                <div className="mt-1 text-white">{draft.dataSources.length}</div>
+            <div className="mt-4 flex items-center gap-6 text-sm text-zinc-400">
+              <div className="inline-flex items-center gap-2">
+                <span className="h-2 w-2 rounded-full bg-emerald-400"></span>
+                {draft.dataSources.length} sources
               </div>
-              <div className="rounded-md bg-zinc-900/40 p-3">
-                <div className="text-zinc-400">Objects</div>
-                <div className="mt-1 text-white">{draft.dataSources.reduce((n, ds) => n + (ds.schema?.objects.length || 0), 0)}</div>
-              </div>
-              <div className="rounded-md bg-zinc-900/40 p-3">
-                <div className="text-zinc-400">First API</div>
-                <div className="mt-1 text-white truncate">{draft.dataSources.find(ds => ds.kind === "api")?.schema?.firstGetEndpoint || "—"}</div>
+              <div className="inline-flex items-center gap-2">
+                <span className="h-2 w-2 rounded-full bg-sky-400"></span>
+                {draft.dataSources.reduce((n, ds) => n + (ds.schema?.objects.length || 0), 0)} objects
               </div>
             </div>
           </div>
@@ -142,39 +138,53 @@ export default function NewProduct() {
                 <input placeholder={s.kind === "dataset" ? "Dataset name (e.g. users_dataset)" : "API name (e.g. users_api)"} value={s.name} onChange={(e) => updateSource(idx, { name: e.target.value })} className="input-glass md:col-span-1 focus:ring-[var(--ring)]" />
                 <input placeholder="Optional description" value={s.description || ""} onChange={(e) => updateSource(idx, { description: e.target.value })} className="input-glass md:col-span-2 focus:ring-[var(--ring)]" />
               </div>
-              <div className="text-xs text-zinc-500">Upload schema: {s.kind === "dataset" ? "AVRO JSON (.json/.avsc)" : "OpenAPI/Swagger JSON or YAML (.json/.yaml/.yml)"}</div>
-              <FileDropzone accept={s.kind === "dataset" ? ".json,.avsc" : ".json,.yaml,.yml"} onTextLoaded={(text) => {
-                try {
-                  const schema = s.kind === "dataset" ? parseAvroSchema(text) : parseOpenApi(text);
-                  // Try to infer name/description for the datasource
-                  const inferred: Partial<DraftSource> = { schema };
-                  if (s.kind === "api") {
-                    let parsed: any = null;
-                    try { parsed = JSON.parse(text); } catch {}
-                    if (!parsed) { try { parsed = YAML.parse(text); } catch {} }
-                    if (parsed) {
-                      const title = parsed?.info?.title;
-                      if (title && !s.name) inferred.name = String(title).toLowerCase().replace(/\s+/g, "_") + "_api";
-                      if (parsed?.info?.description && !s.description) inferred.description = parsed.info.description;
-                    }
-                  } else {
-                    // AVRO: infer from top-level name
+              {!s.schema && (
+                <>
+                  <div className="text-xs text-zinc-500">Upload schema: {s.kind === "dataset" ? "AVRO JSON (.json/.avsc)" : "OpenAPI/Swagger JSON or YAML (.json/.yaml/.yml)"}</div>
+                  <FileDropzone accept={s.kind === "dataset" ? ".json,.avsc" : ".json,.yaml,.yml"} onTextLoaded={(text) => {
                     try {
-                      const parsed = JSON.parse(schema.raw);
-                      const name = parsed?.name || parsed?.type?.name;
-                      if (name && !s.name) inferred.name = String(name).toLowerCase() + "_dataset";
-                      if (parsed?.doc && !s.description) inferred.description = parsed.doc;
-                    } catch {}
-                  }
-                  updateSource(idx, inferred);
-                } catch (e: any) {
-                  alert(e?.message || "Failed to parse schema");
-                }
-              }} />
+                      const schema = s.kind === "dataset" ? parseAvroSchema(text) : parseOpenApi(text);
+                      // Try to infer name/description for the datasource
+                      const inferred: Partial<DraftSource> = { schema };
+                      if (s.kind === "api") {
+                        let parsed: any = null;
+                        try { parsed = JSON.parse(text); } catch {}
+                        if (!parsed) { try { parsed = YAML.parse(text); } catch {} }
+                        if (parsed) {
+                          const title = parsed?.info?.title;
+                          if (title && !s.name) inferred.name = String(title).toLowerCase().replace(/\s+/g, "_") + "_api";
+                          if (parsed?.info?.description && !s.description) inferred.description = parsed.info.description;
+                        }
+                      } else {
+                        // AVRO: infer from top-level name
+                        try {
+                          const parsed = JSON.parse(schema.raw);
+                          const name = parsed?.name || parsed?.type?.name;
+                          if (name && !s.name) inferred.name = String(name).toLowerCase() + "_dataset";
+                          if (parsed?.doc && !s.description) inferred.description = parsed.doc;
+                        } catch {}
+                      }
+                      updateSource(idx, inferred);
+                    } catch (e: any) {
+                      alert(e?.message || "Failed to parse schema");
+                    }
+                  }} />
+                </>
+              )}
               {s.schema && (
-                <div className="rounded-md glass p-3 text-xs text-zinc-300">
-                  <div className="mb-2 text-zinc-400">Parsed objects: {s.schema.objects.length}</div>
-                  <pre className="max-h-48 overflow-auto whitespace-pre-wrap text-zinc-400">{JSON.stringify(s.schema.objects.slice(0, 3), null, 2)}{s.schema.objects.length > 3 ? "\n..." : ""}</pre>
+                <div className="rounded-md glass p-3">
+                  <div className="mb-2 text-xs text-zinc-400">Parsed objects: {s.schema.objects.length}</div>
+                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                    {s.schema.objects.slice(0, 6).map((o, i) => (
+                      <div key={i} className="rounded-md glass px-3 py-2 text-sm text-zinc-300">
+                        <div className="text-white">{o.name}</div>
+                        <div className="text-xs text-zinc-400">{o.fields?.length ?? 0} fields</div>
+                      </div>
+                    ))}
+                  </div>
+                  {s.schema.objects.length > 6 && (
+                    <div className="mt-2 text-xs text-zinc-400">+ {s.schema.objects.length - 6} more objects</div>
+                  )}
                 </div>
               )}
             </div>
@@ -187,9 +197,9 @@ export default function NewProduct() {
 
       <div className="sticky bottom-4 z-10">
         <div className="mx-auto max-w-7xl rounded-xl glass-strong px-4 py-3">
-          <div className="flex items-center justify-end gap-3">
-            <button onClick={handleSave} disabled={!canSave() || saving} className="btn-primary disabled:cursor-not-allowed disabled:opacity-50">
-              {saving ? "Saving..." : "Create Product"}
+          <div className="flex items-center justify-center">
+            <button onClick={handleSave} disabled={!canSave() || saving} className="btn-primary">
+              {saving ? "Saving..." : "Create Data Product"}
             </button>
           </div>
         </div>

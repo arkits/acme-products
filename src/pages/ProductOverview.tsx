@@ -202,10 +202,10 @@ export default function ProductOverview() {
           {product.dataSources.length > 0 ? (
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {product.dataSources.map((ds) => (
-                <div key={ds.id} className="rounded-lg glass p-3">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <div className="text-sm font-medium text-white">{ds.name}</div>
+                <div key={ds.id} className="rounded-lg glass p-3 overflow-hidden">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <div className="text-sm font-medium text-white truncate" title={ds.name}>{ds.name}</div>
                       {ds.description && (
                         <div className="text-xs text-zinc-400 mt-1 line-clamp-2">
                           {ds.description}

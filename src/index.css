@@ -64,7 +64,14 @@ body {
   box-shadow: 0 6px 18px rgba(99, 102, 241, 0.35);
 }
 .btn-primary:hover { filter: brightness(1.05); }
-.btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+.btn-primary:disabled {
+  cursor: not-allowed;
+  opacity: 1;
+  background-image: none;
+  background: rgb(63 63 70); /* zinc-700 */
+  box-shadow: none;
+  color: rgb(228 228 231); /* zinc-200 */
+}
 
 .btn-ghost {
   @apply inline-flex items-center justify-center rounded-md px-3 py-1.5 text-sm transition;
@@ -89,3 +96,20 @@ body {
 ::-webkit-scrollbar { height: 10px; width: 10px; }
 ::-webkit-scrollbar-thumb { background: rgb(82 82 91); border-radius: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }
+
+/* Drawer animations */
+.drawer-overlay {
+  animation: overlay-fade-in 180ms ease-out both;
+}
+.drawer-panel {
+  transform: translateX(100%);
+  animation: panel-slide-in 220ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+@keyframes overlay-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes panel-slide-in {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0%); }
+}

@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import SideDrawer from "../components/SideDrawer";
 import { getAllProducts } from "../storage";
 
 type Field = { name: string; type?: string };
@@ -76,43 +77,49 @@ function ObjectCard({ object, productId }: { object: ProductObject; productId: s
   const [open, setOpen] = useState(false);
   return (
     <div>
-      <button onClick={() => setOpen((v) => !v)} className="flex w-full items-start justify-between gap-3 px-4 py-3 text-left hover:bg-white/5">
+      <button onClick={() => setOpen(true)} className="flex w-full items-start justify-between gap-3 px-4 py-3 text-left hover:bg-white/5">
         <div className="flex items-center gap-2">
-          <span className="text-zinc-500">{open ? "▾" : "▸"}</span>
-          <div>
-            <div className="text-sm font-medium text-white">{object.name}</div>
-          </div>
+          <div className="text-sm font-medium text-white truncate">{object.name}</div>
         </div>
       </button>
-      {open && (
-        <div className="border-t border-zinc-800/60 p-3">
-          <div className="mb-3">
-            <div className="text-xs font-medium text-zinc-300">Sources</div>
-            <div className="mt-2 flex flex-wrap gap-2">
-              {object.sources.map((s) => (
-                <Link key={s.id} to={`/product/${productId}/sources/${s.id}`} className="rounded-md btn-ghost px-2.5 py-1 text-xs whitespace-nowrap">
-                  {s.name}
-                  <span className={`ml-2 rounded-sm px-1 ${s.kind === "dataset" ? "bg-emerald-900/40 text-emerald-300" : "bg-sky-900/40 text-sky-300"}`}>{s.kind}</span>
-                </Link>
-              ))}
-            </div>
+
+      <SideDrawer
+        open={open}
+        onClose={() => setOpen(false)}
+        title={object.name}
+        subtitle={<span className="text-zinc-400">{object.sources.length} source{object.sources.length === 1 ? "" : "s"}</span>}
+      >
+        <div className="mb-4">
+          <div className="text-sm font-medium text-white">Sources</div>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {object.sources.map((s) => (
+              <Link key={s.id} to={`/product/${productId}/sources/${s.id}`} className="rounded-md btn-ghost px-2.5 py-1 text-xs whitespace-nowrap">
+                {s.name}
+                <span className={`ml-2 rounded-sm px-1 ${s.kind === "dataset" ? "bg-emerald-900/40 text-emerald-300" : "bg-sky-900/40 text-sky-300"}`}>{s.kind}</span>
+              </Link>
+            ))}
           </div>
-          <div className="text-xs font-medium text-zinc-300">Fields</div>
-          <table className="mt-2 w-full text-left text-xs">
-            <thead className="text-zinc-500">
-              <tr><th className="px-1 py-1 font-normal">Name</th><th className="px-1 py-1 font-normal">Type</th></tr>
-            </thead>
-            <tbody className="text-zinc-300">
-              {object.fields.map((f, i) => (
-                <tr key={i} className="border-t border-zinc-800/60">
-                  <td className="px-1 py-1">{f.name}</td>
-                  <td className="px-1 py-1 text-zinc-500">{f.type || "-"}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
         </div>
-      )}
+
+        <div>
+          <div className="flex items-center justify-between">
+            <div className="text-sm font-medium text-white">Fields</div>
+            <div className="text-xs text-zinc-400">{object.fields.length} total</div>
+          </div>
+          {object.fields.length === 0 ? (
+            <div className="mt-2 text-sm text-zinc-400">No fields.</div>
+          ) : (
+            <ul className="mt-3 space-y-2">
+              {object.fields.map((f, i) => (
+                <li key={i} className="flex items-center justify-between rounded-md border border-zinc-800/60 bg-black/10 px-3 py-2">
+                  <span className="font-mono text-sm text-white break-all">{f.name}</span>
+                  <span className="ml-3 shrink-0 rounded border border-zinc-800/60 bg-zinc-900/40 px-2 py-0.5 text-xs text-zinc-300">{f.type || "-"}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </SideDrawer>
     </div>
   );
 }

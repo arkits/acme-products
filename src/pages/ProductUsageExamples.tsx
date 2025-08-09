@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import type { ProductOutletContext } from "./ProductDetail";
 import type { UsageExample } from "../types";
 import { updateProduct } from "../storage";
 import { avroSqlSnippets } from "../utils/avro";
 import { openApiCurlSnippets } from "../utils/openapi";
+import hljs from "highlight.js/lib/common";
+import "highlight.js/styles/github-dark.css";
 
 export default function ProductUsageExamples() {
   const { product } = useOutletContext<ProductOutletContext>();
@@ -287,7 +289,7 @@ export default function ProductUsageExamples() {
                             {example.language?.toUpperCase()}
                           </span>
                         </div>
-                        <CodeBlock code={example.code} />
+                        <CodeBlock code={example.code} language={example.language} />
                       </>
                     )}
                   </div>
@@ -313,8 +315,49 @@ export default function ProductUsageExamples() {
   );
 }
 
-function CodeBlock({ code }: { code: string }) {
+function CodeBlock({ code, language }: { code: string; language?: string }) {
+  const codeElementRef = useRef<HTMLElement | null>(null);
+
+  // Map our UI language values to highlight.js language keys
+  const mapLanguageToHljs = (lang?: string) => {
+    const normalized = (lang || "").toLowerCase();
+    switch (normalized) {
+      case "js":
+      case "javascript":
+        return "javascript";
+      case "ts":
+      case "typescript":
+        return "typescript";
+      case "py":
+      case "python":
+        return "python";
+      case "sql":
+        return "sql";
+      case "bash":
+      case "sh":
+      case "shell":
+      case "curl":
+        return "bash";
+      case "json":
+        return "json";
+      default:
+        return "plaintext";
+    }
+  };
+
+  useEffect(() => {
+    if (codeElementRef.current) {
+      hljs.highlightElement(codeElementRef.current);
+    }
+  }, [code, language]);
+
+  const hljsLanguageClass = `language-${mapLanguageToHljs(language)}`;
+
   return (
-    <pre className="overflow-auto rounded-md code-block p-3 text-xs text-zinc-200"><code>{code}</code></pre>
+    <pre className="overflow-auto p-3 text-xs text-zinc-200">
+      <code ref={codeElementRef} className={hljsLanguageClass}>
+        {code}
+      </code>
+    </pre>
   );
 }
