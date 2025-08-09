@@ -22,7 +22,7 @@ export default function SourceDetail() {
           <h3 className="mt-2 text-xl font-semibold text-white">{ds.name}</h3>
           {ds.description && <p className="mt-1 text-zinc-400">{ds.description}</p>}
         </div>
-        <span className={`rounded-md px-2.5 py-1 text-xs h-fit ${ds.kind === "dataset" ? "bg-emerald-900/30 text-emerald-300 border border-emerald-800" : "bg-sky-900/30 text-sky-300 border border-sky-800"}`}>{ds.kind}</span>
+        <span className={`rounded-md px-2.5 py-1 text-xs h-fit ${ds.kind === "dataset" ? "bg-emerald-900/30 text-emerald-300 border border-emerald-800" : "bg-sky-900/30 text-sky-300 border border-sky-800"}`}>{ds.kind.toUpperCase()}</span>
       </div>
 
       <section className="rounded-xl glass">
@@ -32,7 +32,20 @@ export default function SourceDetail() {
           {ds.kind === "api" && (
             <>
               <MetaItem label="Server" value={ds.schema?.serverUrl || "-"} />
-              <MetaItem label="Example GET" value={ds.schema?.firstGetEndpoint || "-"} />
+              <div className="rounded-md glass p-3">
+                <div className="text-xs text-zinc-400">Endpoints</div>
+                <div className="mt-1 text-sm text-zinc-200 space-y-1">
+                  {(ds.schema?.endpoints || []).length > 0 ? (
+                    <ul className="list-disc pl-5">
+                      {(ds.schema?.endpoints || []).map((ep, i) => (
+                        <li key={i} className="break-all">{ep}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <div>-</div>
+                  )}
+                </div>
+              </div>
             </>
           )}
         </div>
@@ -41,7 +54,9 @@ export default function SourceDetail() {
       <section className="rounded-xl glass">
         <div className="border-b border-zinc-800/60 px-4 py-3 text-sm font-medium text-white">Structure</div>
         <div className="p-4 space-y-3">
-          {(ds.schema?.objects || []).map((obj, i) => (
+          {[...(ds.schema?.objects || [])]
+            .sort((a, b) => (b.fields?.length || 0) - (a.fields?.length || 0))
+            .map((obj, i) => (
             <div key={i} className="rounded-md glass">
               <div className="border-b border-zinc-800/60 px-3 py-2 text-sm font-medium text-zinc-200">{obj.name}</div>
               <div className="p-3 overflow-x-auto">

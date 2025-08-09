@@ -15,7 +15,7 @@ export default function ProductSources() {
                 <div className="text-sm text-zinc-300 hover:text-white">{ds.name}</div>
                 <div className="text-xs text-zinc-500">{ds.description}</div>
               </div>
-              <span className={`rounded-md px-2.5 py-1 text-xs ${ds.kind === "dataset" ? "bg-emerald-900/30 text-emerald-300 border border-emerald-800" : "bg-sky-900/30 text-sky-300 border border-sky-800"}`}>{ds.kind}</span>
+              <span className={`rounded-md px-2.5 py-1 text-xs ${ds.kind === "dataset" ? "bg-emerald-900/30 text-emerald-300 border border-emerald-800" : "bg-sky-900/30 text-sky-300 border border-sky-800"}`}>{ds.kind.toUpperCase()}</span>
             </div>
             <div className="mt-3 text-xs text-zinc-400">Objects: {ds.schema?.objects.length || 0}</div>
           </Link>

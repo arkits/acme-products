@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 
-export default function FileDropzone({ onTextLoaded, accept = ".json,.avsc" }: { onTextLoaded: (text: string) => void; accept?: string }) {
+export default function FileDropzone({ onTextLoaded, accept = ".json,.avsc,.yaml,.yml" }: { onTextLoaded: (text: string) => void; accept?: string }) {
   const [isDragging, setDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
 

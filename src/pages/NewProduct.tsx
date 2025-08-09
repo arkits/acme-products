@@ -1,4 +1,5 @@
 import { useState } from "react";
+import YAML from "yaml";
 import type { UpsertProductInput } from "../types";
 import { upsertProduct } from "../storage";
 import FileDropzone from "../components/FileDropzone";
@@ -70,27 +71,49 @@ export default function NewProduct() {
             <label className="text-sm text-zinc-300">Description</label>
             <textarea value={draft.description} onChange={(e) => setDraft({ ...draft, description: e.target.value })} rows={4} className="mt-1 input-glass focus:ring-[var(--ring)]" />
           </div>
+          <div>
+            <label className="text-sm text-zinc-300">Line of Business</label>
+            <input list="lob-options" value={draft.lineOfBusiness} onChange={(e) => setDraft({ ...draft, lineOfBusiness: e.target.value })} placeholder="e.g. Retail Banking" className={`mt-1 input-glass ${attemptedSave && !draft.lineOfBusiness.trim() ? "ring-2 ring-rose-500/50" : "focus:ring-[var(--ring)]"}`} />
+            <datalist id="lob-options">
+              <option value="Retail Banking" />
+              <option value="Cards" />
+              <option value="Payments" />
+              <option value="Compliance" />
+              <option value="Wealth" />
+              <option value="Commercial" />
+            </datalist>
+            {attemptedSave && !draft.lineOfBusiness.trim() && (
+              <div className="mt-1 text-xs text-rose-400">Line of Business is required.</div>
+            )}
+          </div>
         </div>
         <div>
-          <label className="text-sm text-zinc-300">Line of Business</label>
-          <input list="lob-options" value={draft.lineOfBusiness} onChange={(e) => setDraft({ ...draft, lineOfBusiness: e.target.value })} placeholder="e.g. Retail Banking" className={`mt-1 input-glass ${attemptedSave && !draft.lineOfBusiness.trim() ? "ring-2 ring-rose-500/50" : "focus:ring-[var(--ring)]"}`} />
-          <datalist id="lob-options">
-            <option value="Retail Banking" />
-            <option value="Cards" />
-            <option value="Payments" />
-            <option value="Compliance" />
-            <option value="Wealth" />
-            <option value="Commercial" />
-          </datalist>
-          {attemptedSave && !draft.lineOfBusiness.trim() && (
-            <div className="mt-1 text-xs text-rose-400">Line of Business is required.</div>
-          )}
-          <div className="mt-3 rounded-md glass p-3 text-xs text-zinc-400">
-            <div className="text-zinc-300">Product preview</div>
-            <ul className="mt-2 space-y-1">
-              <li>Sources: <span className="text-zinc-200">{draft.dataSources.length}</span></li>
-              <li>Parsed objects: <span className="text-zinc-200">{draft.dataSources.reduce((n, ds) => n + (ds.schema?.objects.length || 0), 0)}</span></li>
-            </ul>
+              <div className="rounded-xl glass p-4">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <div className="text-sm text-zinc-400">Preview</div>
+                <div className="mt-1 text-lg font-medium text-white">{draft.name || "Untitled Product"}</div>
+                <div className="mt-1 text-sm text-zinc-400 line-clamp-3">{draft.description || "Add a short description..."}</div>
+              </div>
+              <span className="rounded-md btn-ghost px-2.5 py-1 text-xs">{draft.lineOfBusiness || "LOB"}</span>
+            </div>
+            <div className="mt-4 grid grid-cols-3 gap-4 text-sm">
+              <div className="rounded-md bg-zinc-900/40 p-3">
+                <div className="text-zinc-400">Sources</div>
+                <div className="mt-1 text-white">{draft.dataSources.length}</div>
+              </div>
+              <div className="rounded-md bg-zinc-900/40 p-3">
+                <div className="text-zinc-400">Objects</div>
+                <div className="mt-1 text-white">{draft.dataSources.reduce((n, ds) => n + (ds.schema?.objects.length || 0), 0)}</div>
+              </div>
+              <div className="rounded-md bg-zinc-900/40 p-3">
+                <div className="text-zinc-400">First API</div>
+                <div className="mt-1 text-white truncate">{draft.dataSources.find(ds => ds.kind === "api")?.schema?.firstGetEndpoint || "—"}</div>
+              </div>
+            </div>
+            <div className="mt-3 text-xs text-zinc-400">
+              Server: <span className="text-zinc-300">{draft.dataSources.find(ds => ds.kind === "api")?.schema?.serverUrl || "—"}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -99,11 +122,11 @@ export default function NewProduct() {
         <div className="flex items-center justify-between border-b border-zinc-800/60 px-4 py-3">
           <div>
             <div className="text-sm font-medium text-white">Data Sources</div>
-            <div className="text-xs text-zinc-400">Datasets (AVRO) or APIs (OpenAPI/Swagger JSON)</div>
+            <div className="text-xs text-zinc-400">Datasets (AVRO) or APIs (OpenAPI/Swagger JSON/YAML)</div>
           </div>
         <div className="flex items-center gap-2">
             <button onClick={() => addSource("dataset")} className="btn-primary px-3 py-1.5 text-xs">+ Dataset</button>
-            <button onClick={() => addSource("api")} className="btn-ghost text-xs">+ API</button>
+            <button onClick={() => addSource("api")} className="btn-primary px-3 py-1.5 text-xs">+ API</button>
           </div>
         </div>
         <div className="divide-y divide-zinc-800/60">
@@ -122,11 +145,31 @@ export default function NewProduct() {
                 <input placeholder={s.kind === "dataset" ? "Dataset name (e.g. users_dataset)" : "API name (e.g. users_api)"} value={s.name} onChange={(e) => updateSource(idx, { name: e.target.value })} className="input-glass md:col-span-1 focus:ring-[var(--ring)]" />
                 <input placeholder="Optional description" value={s.description || ""} onChange={(e) => updateSource(idx, { description: e.target.value })} className="input-glass md:col-span-2 focus:ring-[var(--ring)]" />
               </div>
-              <div className="text-xs text-zinc-500">Upload schema: {s.kind === "dataset" ? "AVRO JSON (.json/.avsc)" : "OpenAPI/Swagger JSON (.json)"}</div>
-              <FileDropzone onTextLoaded={(text) => {
+              <div className="text-xs text-zinc-500">Upload schema: {s.kind === "dataset" ? "AVRO JSON (.json/.avsc)" : "OpenAPI/Swagger JSON or YAML (.json/.yaml/.yml)"}</div>
+              <FileDropzone accept={s.kind === "dataset" ? ".json,.avsc" : ".json,.yaml,.yml"} onTextLoaded={(text) => {
                 try {
                   const schema = s.kind === "dataset" ? parseAvroSchema(text) : parseOpenApi(text);
-                  updateSource(idx, { schema });
+                  // Try to infer name/description for the datasource
+                  const inferred: Partial<DraftSource> = { schema };
+                  if (s.kind === "api") {
+                    let parsed: any = null;
+                    try { parsed = JSON.parse(text); } catch {}
+                    if (!parsed) { try { parsed = YAML.parse(text); } catch {} }
+                    if (parsed) {
+                      const title = parsed?.info?.title;
+                      if (title && !s.name) inferred.name = String(title).toLowerCase().replace(/\s+/g, "_") + "_api";
+                      if (parsed?.info?.description && !s.description) inferred.description = parsed.info.description;
+                    }
+                  } else {
+                    // AVRO: infer from top-level name
+                    try {
+                      const parsed = JSON.parse(schema.raw);
+                      const name = parsed?.name || parsed?.type?.name;
+                      if (name && !s.name) inferred.name = String(name).toLowerCase() + "_dataset";
+                      if (parsed?.doc && !s.description) inferred.description = parsed.doc;
+                    } catch {}
+                  }
+                  updateSource(idx, inferred);
                 } catch (e: any) {
                   alert(e?.message || "Failed to parse schema");
                 }

@@ -1,11 +1,17 @@
 import type { CurlSnippet, DataSourceSchema, SchemaObject, SqlSnippet } from "../types";
+import YAML from "yaml";
 
 export function parseOpenApi(raw: string): DataSourceSchema {
   let json: any;
+  // Try JSON first, then YAML as fallback
   try {
     json = JSON.parse(raw);
   } catch {
-    throw new Error("OpenAPI must be JSON for now");
+    try {
+      json = YAML.parse(raw);
+    } catch {
+      throw new Error("Invalid OpenAPI. Provide JSON or YAML.");
+    }
   }
 
   const objects: SchemaObject[] = [];
@@ -19,18 +25,20 @@ export function parseOpenApi(raw: string): DataSourceSchema {
     objects.push({ name, fields });
   }
 
-  // First GET endpoint for curl
+  // Endpoints collection and first GET endpoint for curl
   let firstGetEndpoint: string | undefined;
+  const endpoints: string[] = [];
   const paths = json.paths || {};
   for (const [p, methods] of Object.entries<any>(paths)) {
-    if (methods.get) {
-      firstGetEndpoint = p;
-      break;
+    for (const [method] of Object.entries<any>(methods)) {
+      const methodLabel = String(method).toUpperCase();
+      endpoints.push(`${methodLabel} ${p}`);
+      if (!firstGetEndpoint && methodLabel === "GET") firstGetEndpoint = p;
     }
   }
   const serverUrl: string | undefined = json.servers?.[0]?.url || json.host ? `https://${json.host}` : undefined;
 
-  return { raw, objects, firstGetEndpoint, serverUrl };
+  return { raw, objects, firstGetEndpoint, serverUrl, endpoints };
 }
 
 export function openApiCurlSnippets(name: string, serverUrl?: string, endpoint?: string): CurlSnippet[] {

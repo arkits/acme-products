@@ -11,6 +11,8 @@ export interface DataSourceSchema {
   firstGetEndpoint?: string;
   // Optional server URL (for APIs)
   serverUrl?: string;
+  // Optional list of endpoints (METHOD path) for APIs
+  endpoints?: string[];
 }
 
 export interface SchemaObjectField {
