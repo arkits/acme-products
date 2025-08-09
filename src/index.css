@@ -7,22 +7,22 @@ html, body, #root {
 :root {
   --bg-1: #0b0f1a; /* deep navy */
   --bg-2: #0a0a0f; /* near black */
-  --bg-3: #120a1a; /* plum tint */
+  --bg-3: #0a1220; /* deep blue tint */
   --fg: #e4e4e7;   /* zinc-200 */
   --muted: #a1a1aa; /* zinc-400 */
   --card: rgba(255,255,255,0.05);
   --card-strong: rgba(255,255,255,0.08);
   --border: rgba(255,255,255,0.12);
-  --ring: rgba(129, 140, 248, 0.55); /* indigo-400 */
+  --ring: rgba(56, 189, 248, 0.55); /* sky-400 */
 }
 
 body {
   margin: 0;
   color: var(--fg);
   background:
-    radial-gradient(1200px 600px at 20% -10%, rgba(99, 102, 241, 0.12), transparent 60%),
-    radial-gradient(900px 500px at 120% 10%, rgba(236, 72, 153, 0.10), transparent 60%),
-    radial-gradient(900px 500px at -20% 100%, rgba(16, 185, 129, 0.08), transparent 60%),
+    radial-gradient(1200px 600px at 20% -10%, rgba(56, 189, 248, 0.12), transparent 60%), /* sky-400 */
+    radial-gradient(900px 500px at 120% 10%, rgba(14, 165, 233, 0.10), transparent 60%), /* sky-500 */
+    radial-gradient(900px 500px at -20% 100%, rgba(16, 185, 129, 0.08), transparent 60%), /* emerald-500 */
     linear-gradient(135deg, var(--bg-1) 0%, var(--bg-2) 50%, var(--bg-3) 100%);
   background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
@@ -60,7 +60,7 @@ body {
 
 .btn-primary {
   @apply inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium text-white transition;
-  background-image: linear-gradient(135deg, rgb(99 102 241) 0%, rgb(147 51 234) 100%);
+  background-image: linear-gradient(135deg, rgb(14 165 233) 0%, rgb(16 185 129) 100%);
   box-shadow: 0 6px 18px rgba(99, 102, 241, 0.35);
 }
 .btn-primary:hover { filter: brightness(1.05); }
@@ -76,7 +76,7 @@ body {
 
 /* Tabs */
 .tab-link { @apply border-b-2 px-1.5 py-2 text-sm transition-colors text-zinc-400 hover:text-zinc-200 border-transparent; }
-.tab-link-active { @apply text-white; border-bottom-color: rgb(99 102 241); }
+.tab-link-active { @apply text-white; border-bottom-color: rgb(14 165 233); }
 
 /* Code block */
 .code-block {

@@ -7,7 +7,7 @@ export default function SourceDetail() {
   const ds = product?.dataSources.find((s) => s.id === dsId);
 
   if (!product || !ds) {
-    return <div className="text-slate-400">Not found. <Link className="text-indigo-400" to={`/product/${id}/sources`}>Back to Sources</Link></div>;
+    return <div className="text-slate-400">Not found. <Link className="text-sky-400" to={`/product/${id}/sources`}>Back to Sources</Link></div>;
   }
 
   return (
@@ -15,7 +15,7 @@ export default function SourceDetail() {
       <div className="flex items-start justify-between gap-6">
         <div>
           <div className="inline-flex items-center gap-2 text-xs text-zinc-400">
-            <Link to={`/product/${product.id}/sources`} className="text-indigo-400">Sources</Link>
+            <Link to={`/product/${product.id}/sources`} className="text-sky-400">Sources</Link>
             <span>/</span>
             <span>{ds.name}</span>
           </div>

@@ -10,7 +10,7 @@ export default function ProductDetail() {
   const product = id ? getProductById(id) : undefined;
 
   if (!product) {
-    return <div className="text-slate-400">Product not found. <Link className="text-indigo-400" to="/">Go back</Link></div>;
+    return <div className="text-slate-400">Product not found. <Link className="text-sky-400" to="/">Go back</Link></div>;
   }
 
   return (
@@ -18,7 +18,7 @@ export default function ProductDetail() {
       <div className="flex items-start justify-between gap-6">
         <div>
           <div className="inline-flex items-center gap-2 text-xs text-zinc-400">
-            <Link to="/" className="text-indigo-400">Browse</Link>
+            <Link to="/" className="text-sky-400">Data Products</Link>
             <span>/</span>
             <span>{product.lineOfBusiness}</span>
           </div>
@@ -37,7 +37,7 @@ export default function ProductDetail() {
       <div>
         <div className="border-b border-zinc-800/60">
           <div className="-mb-px flex items-center gap-6 overflow-x-auto">
-            <TabLink to="overview" label="Overview" />
+            <TabLink to="" label="Overview" />
             <TabLink to="business-needs" label="Business Needs" />
             <TabLink to="sources" label="Sources" />
             <TabLink to="data-dictionary" label="Data Dictionary" />

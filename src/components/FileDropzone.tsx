@@ -26,7 +26,7 @@ export default function FileDropzone({ onTextLoaded, accept = ".json,.avsc,.yaml
       onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
       onDragLeave={() => setDragging(false)}
       onDrop={(e) => { e.preventDefault(); setDragging(false); onFiles(e.dataTransfer.files); }}
-      className={`rounded-lg p-4 text-sm text-zinc-400 glass ${isDragging ? "ring-2 ring-indigo-500/40" : ""}`}
+      className={`rounded-lg p-4 text-sm text-zinc-400 glass ${isDragging ? "ring-2 ring-sky-500/40" : ""}`}
     >
       <div className="flex items-center justify-between gap-3">
         <div>

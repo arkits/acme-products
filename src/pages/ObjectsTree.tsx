@@ -35,8 +35,10 @@ export default function ObjectsTree() {
     <div className="px-4">
       <div className="mx-auto max-w-7xl">
         <div className="mb-6 flex items-center justify-between gap-4">
-          <h2 className="text-xl font-semibold text-white">Data Dictionary</h2>
-          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search objects, sources, products..." className="input-glass w-96 focus:ring-[var(--ring)]" />
+          <h2 className="text-xl font-semibold text-white whitespace-nowrap">Data Dictionary</h2>
+          <div className="w-72 flex-none">
+            <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search objects, sources, products..." className="input-glass w-full focus:ring-[var(--ring)]" />
+          </div>
         </div>
       </div>
       <div className="">

@@ -1,8 +1,9 @@
 import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import { getAllProducts } from "../storage";
 
 type Field = { name: string; type?: string };
-type SourceRef = { name: string; kind: "dataset" | "api" };
+type SourceRef = { id: string; name: string; kind: "dataset" | "api" };
 type ProductObject = { name: string; fields: Field[]; sources: SourceRef[] };
 type ProductGroup = { productId: string; productName: string; objects: ProductObject[] };
 type LobGroup = { lob: string; products: ProductGroup[] };
@@ -18,8 +19,10 @@ export default function ObjectsGraph() {
     <div className="px-4">
       <div className="mx-auto max-w-7xl">
         <div className="mb-6 flex items-center justify-between gap-4">
-          <h2 className="text-xl font-semibold text-white">Data Dictionary</h2>
-          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search objects..." className="input-glass w-96 focus:ring-[var(--ring)]" />
+          <h2 className="text-xl font-semibold text-white whitespace-nowrap">Data Dictionary</h2>
+          <div className="w-72 flex-none">
+            <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search objects..." className="input-glass w-full focus:ring-[var(--ring)]" />
+          </div>
         </div>
       </div>
 
@@ -57,7 +60,7 @@ function ProductSection({ group }: { group: ProductGroup }) {
         <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {group.objects.map((obj) => (
             <li key={obj.name} className="rounded-lg glass">
-              <ObjectCard object={obj} />
+              <ObjectCard object={obj} productId={group.productId} />
             </li>
           ))}
           {group.objects.length === 0 && (
@@ -69,7 +72,7 @@ function ProductSection({ group }: { group: ProductGroup }) {
   );
 }
 
-function ObjectCard({ object }: { object: ProductObject }) {
+function ObjectCard({ object, productId }: { object: ProductObject; productId: string }) {
   const [open, setOpen] = useState(false);
   return (
     <div>
@@ -78,19 +81,22 @@ function ObjectCard({ object }: { object: ProductObject }) {
           <span className="text-zinc-500">{open ? "▾" : "▸"}</span>
           <div>
             <div className="text-sm font-medium text-white">{object.name}</div>
-            <div className="mt-1 flex flex-wrap gap-1">
-              {object.sources.map((s) => (
-                <span key={`${s.name}-${s.kind}`} className="inline-flex items-center gap-1 rounded-md btn-ghost px-2 py-0.5 text-[11px]">
-                  <span>{s.name}</span>
-                  <span className={`rounded-sm px-1 ${s.kind === "dataset" ? "bg-emerald-900/40 text-emerald-300" : "bg-sky-900/40 text-sky-300"}`}>{s.kind}</span>
-                </span>
-              ))}
-            </div>
           </div>
         </div>
       </button>
       {open && (
         <div className="border-t border-zinc-800/60 p-3">
+          <div className="mb-3">
+            <div className="text-xs font-medium text-zinc-300">Sources</div>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {object.sources.map((s) => (
+                <Link key={s.id} to={`/product/${productId}/sources/${s.id}`} className="rounded-md btn-ghost px-2.5 py-1 text-xs whitespace-nowrap">
+                  {s.name}
+                  <span className={`ml-2 rounded-sm px-1 ${s.kind === "dataset" ? "bg-emerald-900/40 text-emerald-300" : "bg-sky-900/40 text-sky-300"}`}>{s.kind}</span>
+                </Link>
+              ))}
+            </div>
+          </div>
           <div className="text-xs font-medium text-zinc-300">Fields</div>
           <table className="mt-2 w-full text-left text-xs">
             <thead className="text-zinc-500">
@@ -128,12 +134,12 @@ function buildGroups(products: ReturnType<typeof getAllProducts>): LobGroup[] {
         const existing = objectMap.get(o.name);
         const fields = o.fields || [];
         if (!existing) {
-          objectMap.set(o.name, { name: o.name, fields: [...fields], sources: [{ name: ds.name, kind: ds.kind }] });
+          objectMap.set(o.name, { name: o.name, fields: [...fields], sources: [{ id: ds.id, name: ds.name, kind: ds.kind }] });
         } else {
           // merge fields
           const known = new Set(existing.fields.map((f) => f.name));
           for (const f of fields) if (!known.has(f.name)) existing.fields.push({ name: f.name, type: f.type });
-          if (!existing.sources.some((s) => s.name === ds.name && s.kind === ds.kind)) existing.sources.push({ name: ds.name, kind: ds.kind });
+          if (!existing.sources.some((s) => s.id === ds.id)) existing.sources.push({ id: ds.id, name: ds.name, kind: ds.kind });
         }
       }
     }

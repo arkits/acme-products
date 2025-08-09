@@ -126,7 +126,7 @@ export default function ProductUsageExamples() {
         <div className="p-4 space-y-4">
           {/* Add new example form */}
           {isAdding && (
-            <div className="rounded-lg glass p-4 border border-indigo-800/50">
+            <div className="rounded-lg glass p-4 border border-sky-800/50">
               <div className="space-y-3">
                 <div>
                   <label className="block text-xs text-zinc-400 mb-1">Name</label>
@@ -134,7 +134,7 @@ export default function ProductUsageExamples() {
                     type="text"
                     value={newExample.name}
                     onChange={(e) => setNewExample(prev => ({ ...prev, name: e.target.value }))}
-                    className="input w-full"
+                    className="input-glass w-full"
                     placeholder="Enter example name..."
                   />
                 </div>
@@ -143,7 +143,7 @@ export default function ProductUsageExamples() {
                   <textarea
                     value={newExample.description}
                     onChange={(e) => setNewExample(prev => ({ ...prev, description: e.target.value }))}
-                    className="input w-full h-16 resize-none"
+                    className="input-glass w-full h-16 resize-none"
                     placeholder="Describe what this example demonstrates..."
                   />
                 </div>
@@ -152,7 +152,7 @@ export default function ProductUsageExamples() {
                   <select
                     value={newExample.language}
                     onChange={(e) => setNewExample(prev => ({ ...prev, language: e.target.value }))}
-                    className="input w-full"
+                    className="input-glass w-full"
                   >
                     <option value="sql">SQL</option>
                     <option value="python">Python</option>
@@ -166,7 +166,7 @@ export default function ProductUsageExamples() {
                   <textarea
                     value={newExample.code}
                     onChange={(e) => setNewExample(prev => ({ ...prev, code: e.target.value }))}
-                    className="input w-full h-32 resize-none font-mono text-xs"
+                    className="input-glass w-full h-32 resize-none font-mono text-xs"
                     placeholder="Enter your code example..."
                   />
                 </div>
@@ -200,7 +200,7 @@ export default function ProductUsageExamples() {
                           type="text"
                           value={editDraft?.name || ''}
                           onChange={(e) => setEditDraft((d) => (d ? { ...d, name: e.target.value } : d))}
-                          className="input text-sm font-medium"
+                          className="input-glass text-sm font-medium"
                         />
                       ) : (
                         <div className="text-sm font-medium text-white">{example.name}</div>
@@ -252,7 +252,7 @@ export default function ProductUsageExamples() {
                           <textarea
                             value={editDraft?.description || ''}
                             onChange={(e) => setEditDraft((d) => (d ? { ...d, description: e.target.value } : d))}
-                            className="input w-full h-16 resize-none"
+                            className="input-glass w-full h-16 resize-none"
                           />
                         </div>
                         <div>
@@ -260,7 +260,7 @@ export default function ProductUsageExamples() {
                           <select
                             value={editDraft?.language || 'sql'}
                             onChange={(e) => setEditDraft((d) => (d ? { ...d, language: e.target.value } : d))}
-                            className="input w-32"
+                            className="input-glass w-32"
                           >
                             <option value="sql">SQL</option>
                             <option value="python">Python</option>
@@ -274,7 +274,7 @@ export default function ProductUsageExamples() {
                           <textarea
                             value={editDraft?.code || ''}
                             onChange={(e) => setEditDraft((d) => (d ? { ...d, code: e.target.value } : d))}
-                            className="input w-full h-32 resize-none font-mono text-xs"
+                            className="input-glass w-full h-32 resize-none font-mono text-xs"
                           />
                         </div>
                       </>

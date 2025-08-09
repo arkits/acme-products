@@ -7,7 +7,7 @@ export default function ProductCard({ product }: { product: DataProduct }) {
     <Link to={`/product/${product.id}`} className="group block rounded-xl glass p-5 glass-hover transition-colors">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h3 className="text-lg font-medium text-white group-hover:text-indigo-300 transition-colors">{product.name}</h3>
+          <h3 className="text-lg font-medium text-white group-hover:text-sky-300 transition-colors">{product.name}</h3>
           <p className="mt-1 text-sm text-zinc-400 line-clamp-2">{product.description}</p>
         </div>
         <span className="rounded-md btn-ghost px-2.5 py-1 text-xs">{product.lineOfBusiness}</span>

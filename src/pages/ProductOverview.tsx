@@ -88,7 +88,7 @@ export default function ProductOverview() {
         <div className="p-4">
           {isEditing ? (
             <textarea
-              className="input w-full min-h-24"
+              className="input-glass w-full min-h-24"
               value={draft.description}
               onChange={(e) => setDraft((d) => ({ ...d, description: e.target.value }))}
             />
@@ -110,7 +110,7 @@ export default function ProductOverview() {
                 <div>
                   <label className="block text-xs text-zinc-400 mb-1">Name</label>
                   <input
-                    className="input w-full"
+                    className="input-glass w-full"
                     value={owner.name}
                     onChange={(e) => setDraft((d) => ({ ...d, owner: { ...d.owner, name: e.target.value } }))}
                   />
@@ -118,7 +118,7 @@ export default function ProductOverview() {
                 <div>
                   <label className="block text-xs text-zinc-400 mb-1">Email</label>
                   <input
-                    className="input w-full"
+                    className="input-glass w-full"
                     value={owner.email}
                     onChange={(e) => setDraft((d) => ({ ...d, owner: { ...d.owner, email: e.target.value } }))}
                   />
@@ -126,7 +126,7 @@ export default function ProductOverview() {
                 <div>
                   <label className="block text-xs text-zinc-400 mb-1">Team</label>
                   <input
-                    className="input w-full"
+                    className="input-glass w-full"
                     value={owner.team || ""}
                     onChange={(e) => setDraft((d) => ({ ...d, owner: { ...d.owner, team: e.target.value } }))}
                   />
@@ -165,7 +165,7 @@ export default function ProductOverview() {
               <div className="text-xs text-zinc-400">Line of Business</div>
               {isEditing ? (
                 <input
-                  className="input w-full mt-1"
+                  className="input-glass w-full mt-1"
                   value={draft.lineOfBusiness}
                   onChange={(e) => setDraft((d) => ({ ...d, lineOfBusiness: e.target.value }))}
                 />

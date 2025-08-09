@@ -32,7 +32,7 @@ export default function Browse() {
         <h2 className="text-xl font-semibold text-white">Browse Data Products</h2>
         <div className="flex items-center gap-3">
           <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search..." className="input-glass w-72 focus:ring-[var(--ring)]" />
-          <Link to="/new" className="btn-primary text-xs px-3 py-1">New Data Product</Link>
+          <Link to="/new" className="btn-primary text-xs px-3 py-1 whitespace-nowrap">New Data Product</Link>
         </div>
       </div>
 

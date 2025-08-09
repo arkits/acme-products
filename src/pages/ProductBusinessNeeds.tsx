@@ -88,7 +88,7 @@ export default function ProductBusinessNeeds() {
         <div className="p-4 space-y-4">
           {/* Add new business need form */}
           {isAdding && (
-            <div className="rounded-lg glass p-4 border border-indigo-800/50">
+            <div className="rounded-lg glass p-4 border border-sky-800/50">
               <div className="space-y-3">
                 <div>
                   <label className="block text-xs text-zinc-400 mb-1">Title</label>
