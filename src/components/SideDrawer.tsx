@@ -28,8 +28,8 @@ export default function SideDrawer({ open, onClose, title, subtitle, actions, ch
 
   return createPortal(
     <div className="fixed inset-0 z-[1000]" role="dialog" aria-modal="true">
-      <div className="drawer-overlay absolute inset-0 bg-black/50" onClick={onClose} />
-      <div className={`drawer-panel absolute right-0 top-0 h-full ${widthClassName || "w-full sm:w-[480px] md:w-[560px]"} glass-strong border-l border-zinc-800/60 shadow-2xl`}>
+      <div className="drawer-overlay absolute inset-0 bg-black/70" onClick={onClose} />
+      <div className={`drawer-panel absolute right-0 top-0 h-full ${widthClassName || "w-full sm:w-[480px] md:w-[560px]"} drawer-surface border-l border-zinc-800/60 shadow-2xl`}>
         <div className="flex items-center justify-between border-b border-zinc-800/60 px-5 py-4">
           <div className="min-w-0">
             {subtitle ? <div className="text-xs text-zinc-400">{subtitle}</div> : null}

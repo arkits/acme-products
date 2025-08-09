@@ -105,6 +105,8 @@ body {
 /* Drawer animations */
 .drawer-overlay {
   animation: overlay-fade-in 180ms ease-out both;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
 .drawer-panel {
   transform: translateX(100%);
@@ -117,4 +119,11 @@ body {
 @keyframes panel-slide-in {
   from { transform: translateX(100%); }
   to { transform: translateX(0%); }
+}
+
+/* Side drawer surface: more opaque + stronger blur, no default border */
+.drawer-surface {
+  background: rgba(12, 12, 20, 0.72);
+  backdrop-filter: blur(16px) saturate(130%);
+  -webkit-backdrop-filter: blur(16px) saturate(130%);
 }
