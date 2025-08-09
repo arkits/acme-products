@@ -1,25 +1,100 @@
 import { useOutletContext } from "react-router-dom";
+import { useMemo, useState } from "react";
 import type { ProductOutletContext } from "./ProductDetail";
+import type { Owner } from "../types";
+import { updateProduct } from "../storage";
 
 export default function ProductOverview() {
   const { product } = useOutletContext<ProductOutletContext>();
+  const [isEditing, setIsEditing] = useState(false);
+  const [draft, setDraft] = useState(() => ({
+    name: product.name || "",
+    description: product.description || "",
+    lineOfBusiness: product.lineOfBusiness || "",
+    owner: (product.owner || {
+      name: "Alex Johnson",
+      email: "alex.johnson@company.com",
+      team: "Data Engineering",
+    }) as Owner,
+  }));
 
   // Mock owner if not present
-  const owner = product.owner || {
-    name: "Alex Johnson",
-    email: "alex.johnson@company.com",
-    team: "Data Engineering"
-  };
+  const owner = useMemo<Owner>(() => {
+    return draft.owner || {
+      name: "Alex Johnson",
+      email: "alex.johnson@company.com",
+      team: "Data Engineering",
+    };
+  }, [draft.owner]);
+
+  function startEdit() {
+    setDraft({
+      name: product.name || "",
+      description: product.description || "",
+      lineOfBusiness: product.lineOfBusiness || "",
+      owner: (product.owner || {
+        name: "Alex Johnson",
+        email: "alex.johnson@company.com",
+        team: "Data Engineering",
+      }) as Owner,
+    });
+    setIsEditing(true);
+  }
+
+  function cancelEdit() {
+    setIsEditing(false);
+    setDraft({
+      name: product.name || "",
+      description: product.description || "",
+      lineOfBusiness: product.lineOfBusiness || "",
+      owner: (product.owner || {
+        name: "Alex Johnson",
+        email: "alex.johnson@company.com",
+        team: "Data Engineering",
+      }) as Owner,
+    });
+  }
+
+  function saveEdit() {
+    const updated = {
+      ...product,
+      name: draft.name,
+      description: draft.description,
+      lineOfBusiness: draft.lineOfBusiness,
+      owner: draft.owner,
+      updatedAt: new Date().toISOString(),
+    };
+    updateProduct(updated);
+    setIsEditing(false);
+  }
 
   return (
     <div className="space-y-6">
+      <div className="flex items-center justify-end">
+        {isEditing ? (
+          <div className="flex gap-2">
+            <button onClick={saveEdit} className="btn-primary text-xs px-3 py-1">Save</button>
+            <button onClick={cancelEdit} className="btn-ghost text-xs px-3 py-1">Cancel</button>
+          </div>
+        ) : (
+          <button onClick={startEdit} className="btn-ghost text-xs px-3 py-1">Edit</button>
+        )}
+      </div>
       {/* Description Section */}
       <section className="rounded-xl glass">
         <div className="border-b border-zinc-800/60 px-4 py-3 text-sm font-medium text-white">
           Description
         </div>
         <div className="p-4">
-          <p className="text-zinc-300 leading-relaxed">{product.description}</p>
+          {isEditing ? (
+            <textarea
+              className="input w-full min-h-24"
+              value={draft.description}
+              onChange={(e) => setDraft((d) => ({ ...d, description: e.target.value }))}
+            />
+          ) : (
+            <p className="text-zinc-300 leading-relaxed">{draft.description}</p>
+          )}
         </div>
       </section>
 
@@ -30,13 +105,42 @@ export default function ProductOverview() {
             Owner
           </div>
           <div className="p-4 space-y-3">
-            <div>
-              <div className="text-sm font-medium text-white">{owner.name}</div>
-              <div className="text-sm text-zinc-400">{owner.email}</div>
-              {owner.team && (
-                <div className="text-xs text-zinc-500 mt-1">{owner.team}</div>
-              )}
-            </div>
+            {isEditing ? (
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-xs text-zinc-400 mb-1">Name</label>
+                  <input
+                    className="input w-full"
+                    value={owner.name}
+                    onChange={(e) => setDraft((d) => ({ ...d, owner: { ...d.owner, name: e.target.value } }))}
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-zinc-400 mb-1">Email</label>
+                  <input
+                    className="input w-full"
+                    value={owner.email}
+                    onChange={(e) => setDraft((d) => ({ ...d, owner: { ...d.owner, email: e.target.value } }))}
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-zinc-400 mb-1">Team</label>
+                  <input
+                    className="input w-full"
+                    value={owner.team || ""}
+                    onChange={(e) => setDraft((d) => ({ ...d, owner: { ...d.owner, team: e.target.value } }))}
+                  />
+                </div>
+              </div>
+            ) : (
+              <div>
+                <div className="text-sm font-medium text-white">{owner.name}</div>
+                <div className="text-sm text-zinc-400">{owner.email}</div>
+                {owner.team && (
+                  <div className="text-xs text-zinc-500 mt-1">{owner.team}</div>
+                )}
+              </div>
+            )}
           </div>
         </section>
 
@@ -46,8 +150,28 @@ export default function ProductOverview() {
           </div>
           <div className="p-4 space-y-3">
             <div>
+              <div className="text-xs text-zinc-400">Name</div>
+              {isEditing ? (
+                <input
+                  className="input w-full mt-1"
+                  value={draft.name}
+                  onChange={(e) => setDraft((d) => ({ ...d, name: e.target.value }))}
+                />
+              ) : (
+                <div className="text-sm text-white">{draft.name}</div>
+              )}
+            </div>
+            <div>
               <div className="text-xs text-zinc-400">Line of Business</div>
-              <div className="text-sm text-white">{product.lineOfBusiness}</div>
+              {isEditing ? (
+                <input
+                  className="input w-full mt-1"
+                  value={draft.lineOfBusiness}
+                  onChange={(e) => setDraft((d) => ({ ...d, lineOfBusiness: e.target.value }))}
+                />
+              ) : (
+                <div className="text-sm text-white">{draft.lineOfBusiness}</div>
+              )}
             </div>
             <div>
               <div className="text-xs text-zinc-400">Data Sources</div>

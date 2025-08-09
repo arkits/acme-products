@@ -14,8 +14,7 @@ export default function Layout({ children }: { children: ReactNode }) {
           </Link>
           <nav className="flex items-center gap-6 text-sm">
             <NavLink to="/" end className={({ isActive }) => `${isActive ? "text-white" : "text-zinc-400 hover:text-zinc-200"}`}>Browse</NavLink>
-            <NavLink to="/objects" className={({ isActive }) => `${isActive ? "text-white" : "text-zinc-400 hover:text-zinc-200"}`}>Objects</NavLink>
-            <NavLink to="/new" className={({ isActive }) => `${isActive ? "text-white" : "text-zinc-400 hover:text-zinc-200"}`}>New Product</NavLink>
+            <NavLink to="/objects" className={({ isActive }) => `${isActive ? "text-white" : "text-zinc-400 hover:text-zinc-200"}`}>Data Dictionary</NavLink>
             <NavLink to="/settings" className={({ isActive }) => `${isActive ? "text-white" : "text-zinc-400 hover:text-zinc-200"}`}>Settings</NavLink>
           </nav>
         </div>
@@ -23,9 +22,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       <main className={`mx-auto ${isObjectsPage ? "max-w-none px-0" : "max-w-7xl px-4"} py-6`}>
         {children}
       </main>
-      <footer className="mx-auto max-w-7xl px-4 pb-10 pt-8 text-xs text-zinc-400">
-        © {new Date().getFullYear()} Acme Corp · Built with React + Tailwind
-      </footer>
+      {/* Footer removed as requested */}
     </div>
   );
 }

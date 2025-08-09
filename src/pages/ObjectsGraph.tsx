@@ -18,7 +18,7 @@ export default function ObjectsGraph() {
     <div className="px-4">
       <div className="mx-auto max-w-7xl">
         <div className="mb-6 flex items-center justify-between gap-4">
-          <h2 className="text-xl font-semibold text-white">Objects</h2>
+          <h2 className="text-xl font-semibold text-white">Data Dictionary</h2>
           <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search objects..." className="input-glass w-96 focus:ring-[var(--ring)]" />
         </div>
       </div>
