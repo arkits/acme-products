@@ -90,25 +90,29 @@ export default function ProductSources() {
                     const schema = draft.kind === "dataset" ? parseAvroSchema(text) : parseOpenApi(text);
                     const inferred: Partial<UpsertProductInput["dataSources"][number]> = { schema };
                     if (draft.kind === "api") {
-                      let parsed: any = null;
-                      try { parsed = JSON.parse(text); } catch {}
-                      if (!parsed) { try { parsed = YAML.parse(text); } catch {} }
-                      if (parsed) {
-                        const title = parsed?.info?.title;
-                        if (title && !draft.name) inferred.name = String(title).toLowerCase().replace(/\s+/g, "_") + "_api";
-                        if (parsed?.info?.description && !draft.description) inferred.description = parsed.info.description;
+                      let parsed: unknown = null;
+                      try { parsed = JSON.parse(text); } catch { /* ignore invalid JSON */ }
+                      if (!parsed) { try { parsed = YAML.parse(text); } catch { /* ignore invalid YAML */ } }
+                      if (parsed && typeof parsed === 'object') {
+                        const obj = parsed as { info?: { title?: unknown; description?: unknown } };
+                        const title = typeof obj.info?.title === 'string' ? obj.info.title : undefined;
+                        const desc = typeof obj.info?.description === 'string' ? obj.info.description : undefined;
+                        if (title && !draft.name) inferred.name = title.toLowerCase().replace(/\s+/g, "_") + "_api";
+                        if (desc && !draft.description) inferred.description = desc;
                       }
                     } else {
                       try {
-                        const parsed = JSON.parse(schema.raw);
-                        const name = (parsed as any)?.name || (parsed as any)?.type?.name;
+                        const parsed = JSON.parse(schema.raw) as { name?: unknown; type?: { name?: unknown }; doc?: unknown };
+                        const typeName = typeof parsed.type?.name === 'string' ? parsed.type?.name : undefined;
+                        const name = typeof parsed.name === 'string' ? parsed.name : typeName;
                         if (name && !draft.name) inferred.name = String(name).toLowerCase() + "_dataset";
-                        if ((parsed as any)?.doc && !draft.description) inferred.description = (parsed as any).doc;
-                      } catch {}
+                        if (typeof parsed.doc === 'string' && !draft.description) inferred.description = parsed.doc;
+                      } catch { /* ignore */ }
                     }
                     updateDraft(inferred);
-                  } catch (e: any) {
-                    alert(e?.message || "Failed to parse schema");
+                  } catch (e: unknown) {
+                    const message = e instanceof Error ? e.message : String(e);
+                    alert(message || "Failed to parse schema");
                   }
                 }}
               />

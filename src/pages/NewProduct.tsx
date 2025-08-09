@@ -144,29 +144,31 @@ export default function NewProduct() {
                   <FileDropzone accept={s.kind === "dataset" ? ".json,.avsc" : ".json,.yaml,.yml"} onTextLoaded={(text) => {
                     try {
                       const schema = s.kind === "dataset" ? parseAvroSchema(text) : parseOpenApi(text);
-                      // Try to infer name/description for the datasource
                       const inferred: Partial<DraftSource> = { schema };
                       if (s.kind === "api") {
-                        let parsed: any = null;
-                        try { parsed = JSON.parse(text); } catch {}
-                        if (!parsed) { try { parsed = YAML.parse(text); } catch {} }
-                        if (parsed) {
-                          const title = parsed?.info?.title;
-                          if (title && !s.name) inferred.name = String(title).toLowerCase().replace(/\s+/g, "_") + "_api";
-                          if (parsed?.info?.description && !s.description) inferred.description = parsed.info.description;
+                        let parsed: unknown = null;
+                        try { parsed = JSON.parse(text); } catch { /* ignore invalid JSON */ }
+                        if (!parsed) { try { parsed = YAML.parse(text); } catch { /* ignore invalid YAML */ } }
+                        if (parsed && typeof parsed === 'object') {
+                          const obj = parsed as { info?: { title?: unknown; description?: unknown } };
+                          const title = typeof obj.info?.title === 'string' ? obj.info.title : undefined;
+                          const desc = typeof obj.info?.description === 'string' ? obj.info.description : undefined;
+                          if (title && !s.name) inferred.name = title.toLowerCase().replace(/\s+/g, "_") + "_api";
+                          if (desc && !s.description) inferred.description = desc;
                         }
                       } else {
-                        // AVRO: infer from top-level name
                         try {
-                          const parsed = JSON.parse(schema.raw);
-                          const name = parsed?.name || parsed?.type?.name;
+                          const parsed = JSON.parse(schema.raw) as { name?: unknown; type?: { name?: unknown }; doc?: unknown };
+                          const typeName = typeof parsed.type?.name === 'string' ? parsed.type?.name : undefined;
+                          const name = typeof parsed.name === 'string' ? parsed.name : typeName;
                           if (name && !s.name) inferred.name = String(name).toLowerCase() + "_dataset";
-                          if (parsed?.doc && !s.description) inferred.description = parsed.doc;
-                        } catch {}
+                          if (typeof parsed.doc === 'string' && !s.description) inferred.description = parsed.doc;
+                        } catch { /* ignore */ }
                       }
                       updateSource(idx, inferred);
-                    } catch (e: any) {
-                      alert(e?.message || "Failed to parse schema");
+                    } catch (e: unknown) {
+                      const message = e instanceof Error ? e.message : String(e);
+                      alert(message || "Failed to parse schema");
                     }
                   }} />
                 </>

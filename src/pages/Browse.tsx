@@ -20,8 +20,9 @@ export default function Browse() {
     const map = new Map<string, typeof filtered>();
     for (const p of filtered) {
       const key = p.lineOfBusiness || "General";
-      if (!map.has(key)) map.set(key, [] as any);
-      (map.get(key) as any).push(p);
+      if (!map.has(key)) map.set(key, [] as typeof filtered);
+      const arr = map.get(key)!;
+      arr.push(p);
     }
     return Array.from(map.entries()).sort((a, b) => a[0].localeCompare(b[0]));
   }, [filtered]);

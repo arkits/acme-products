@@ -13,8 +13,9 @@ export default function FileDropzone({ onTextLoaded, accept = ".json,.avsc,.yaml
         const text = String(reader.result);
         onTextLoaded(text);
         setError(null);
-      } catch (e: any) {
-        setError(e?.message || "Failed to read file");
+      } catch (e: unknown) {
+        const message = e instanceof Error ? e.message : String(e);
+        setError(message || "Failed to read file");
       }
     };
     reader.onerror = () => setError("Failed to read file");

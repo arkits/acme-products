@@ -64,7 +64,7 @@ export default function ProductBusinessNeeds() {
     updateProduct(updatedProduct);
   };
 
-  const getPriorityColor = (priority?: string) => {
+  const getPriorityColor = (priority?: BusinessNeed['priority']) => {
     switch (priority) {
       case 'high': return 'bg-red-900/30 text-red-300 border-red-800';
       case 'low': return 'bg-gray-900/30 text-gray-300 border-gray-800';
@@ -113,7 +113,7 @@ export default function ProductBusinessNeeds() {
                   <label className="block text-xs text-zinc-400 mb-1">Priority</label>
                   <select
                     value={newNeed.priority}
-                    onChange={(e) => setNewNeed(prev => ({ ...prev, priority: e.target.value as any }))}
+                    onChange={(e) => setNewNeed(prev => ({ ...prev, priority: e.target.value as BusinessNeed['priority'] }))}
                     className="input w-full"
                   >
                     <option value="low">Low</option>

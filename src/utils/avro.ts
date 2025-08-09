@@ -2,42 +2,67 @@ import type { CurlSnippet, DataSourceSchema, SchemaObject, SqlSnippet } from "..
 
 export function parseAvroSchema(raw: string): DataSourceSchema {
   // We support simple AVRO record JSONs. We do not support AVSC with imports.
-  let json: any;
+  let json: unknown;
   try {
     json = JSON.parse(raw);
-  } catch (e) {
+  } catch {
     throw new Error("Invalid AVRO JSON");
   }
 
   const objects: SchemaObject[] = [];
 
-  function collectRecord(node: any) {
-    if (!node) return;
-    const isRecord = node.type === "record" || node.type?.type === "record";
+  type AvroRecordLike = {
+    type?: unknown;
+    name?: unknown;
+    fields?: unknown;
+  };
+
+  const isObject = (val: unknown): val is Record<string, unknown> =>
+    typeof val === "object" && val !== null;
+
+  const getTypeString = (val: unknown): string => {
+    if (typeof val === "string") return val;
+    if (isObject(val) && typeof (val as { type?: unknown }).type === "string") {
+      return String((val as { type?: unknown }).type);
+    }
+    return "unknown";
+  };
+
+  function collectRecord(node: unknown): void {
+    if (!isObject(node)) return;
+    const n = node as AvroRecordLike;
+    const recordType = (n.type as { type?: unknown } | string | undefined);
+    const isRecord = recordType === "record" || (isObject(recordType) && (recordType as { type?: unknown }).type === "record");
     if (isRecord) {
-      const name = node.name || node.type?.name || "Record";
-      const fields = (node.fields || node.type?.fields || []).map((f: any) => ({
-        name: f.name ?? "field",
-        type: typeof f.type === "string" ? f.type : f.type?.type ?? "unknown",
-      }));
+      const nameCandidate = (n.name as unknown) ?? (isObject(n.type) ? (n.type as Record<string, unknown>).name : undefined);
+      const name = typeof nameCandidate === "string" ? nameCandidate : "Record";
+      const fieldsArray = (n.fields as unknown) ?? (isObject(n.type) ? (n.type as Record<string, unknown>).fields : undefined);
+      const array = Array.isArray(fieldsArray) ? (fieldsArray as unknown[]) : [];
+      const fields = array.map((fUnknown) => {
+        const f = fUnknown as { name?: unknown; type?: unknown };
+        const fieldName = typeof f.name === "string" ? f.name : "field";
+        const fieldType = getTypeString(f.type);
+        return { name: fieldName, type: fieldType };
+      });
       objects.push({ name, fields });
     }
     // Recurse through nested types/fields
-    const fields = node.fields || node.type?.fields;
-    if (Array.isArray(fields)) {
-      for (const f of fields) {
-        if (typeof f.type === "object") collectRecord(f.type);
-        if (Array.isArray(f.type)) {
-          for (const t of f.type) if (typeof t === "object") collectRecord(t);
+    const nestedFields = (n.fields as unknown) ?? (isObject(n.type) ? (n.type as Record<string, unknown>).fields : undefined);
+    if (Array.isArray(nestedFields)) {
+      for (const f of nestedFields as unknown[]) {
+        const t = isObject(f) ? (f as Record<string, unknown>).type : undefined;
+        if (isObject(t)) collectRecord(t);
+        if (Array.isArray(t)) {
+          for (const u of t as unknown[]) if (isObject(u)) collectRecord(u);
         }
       }
     }
   }
 
   if (Array.isArray(json)) {
-    json.forEach(collectRecord);
-  } else if (typeof json === "object") {
-    collectRecord(json);
+    (json as unknown[]).forEach(collectRecord);
+  } else if (typeof json === "object" && json !== null) {
+    collectRecord(json as Record<string, unknown>);
   }
 
   return {
