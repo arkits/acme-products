@@ -21,7 +21,8 @@ export default function App() {
   }, []);
 
   // Use Vite's BASE_URL as the router basename so links work under GitHub Pages subpath
-  const basename = (import.meta as any).env?.BASE_URL?.replace(/\/$/, "") || "/";
+  const baseEnv = (import.meta as unknown as { env?: { BASE_URL?: string } }).env;
+  const basename = baseEnv?.BASE_URL ? baseEnv.BASE_URL.replace(/\/$/, "") : "/";
   return (
     <BrowserRouter basename={basename}>
       <Layout>
