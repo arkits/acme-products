@@ -28,7 +28,7 @@ export default function ProductDetail() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => { if (confirm("Delete this product?")) { deleteProduct(product.id); navigate("/"); } }}
-            className="rounded-md border border-rose-700 bg-rose-900/30 px-3 py-1.5 text-sm text-rose-300 hover:bg-rose-900/50"
+            className="btn-ghost text-rose-300"
           >
             Delete
           </button>
@@ -36,7 +36,7 @@ export default function ProductDetail() {
       </div>
 
       <div>
-        <div className="border-b border-zinc-800">
+        <div className="border-b border-zinc-800/60">
           <div className="-mb-px flex items-center gap-6">
             <TabLink to="sources" label="Sources" />
             <TabLink to="objects" label="Objects" />
@@ -55,7 +55,7 @@ function TabLink({ to, label }: { to: string; label: string }) {
   return (
     <NavLink
       to={to}
-      className={({ isActive }) => `border-b-2 px-1.5 py-2 text-sm transition-colors ${isActive ? "border-indigo-500 text-white" : "border-transparent text-zinc-400 hover:text-zinc-200"}`}
+      className={({ isActive }) => `${isActive ? "tab-link tab-link-active" : "tab-link"}`}
       end
     >
       {label}

@@ -8,8 +8,8 @@ export default function ProductConsume() {
   return (
     <div className="space-y-6">
       {product.dataSources.map((ds) => (
-        <section key={ds.id} className="rounded-xl border border-zinc-800 bg-zinc-900/40">
-          <div className="border-b border-zinc-800 px-4 py-3 text-sm font-medium text-white">{ds.name}</div>
+        <section key={ds.id} className="rounded-xl glass">
+          <div className="border-b border-zinc-800/60 px-4 py-3 text-sm font-medium text-white">{ds.name}</div>
           <div className="p-4">
             {ds.kind === "dataset" ? (
               <div>
@@ -26,7 +26,7 @@ export default function ProductConsume() {
         </section>
       ))}
       {product.dataSources.length === 0 && (
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-6 text-sm text-zinc-400">No sources to show.</div>
+        <div className="rounded-xl glass p-6 text-sm text-zinc-400">No sources to show.</div>
       )}
     </div>
   );
@@ -34,7 +34,7 @@ export default function ProductConsume() {
 
 function CodeBlock({ code }: { code: string }) {
   return (
-    <pre className="overflow-auto rounded-md border border-zinc-800 bg-zinc-950 p-3 text-xs text-zinc-200"><code>{code}</code></pre>
+    <pre className="overflow-auto rounded-md code-block p-3 text-xs text-zinc-200"><code>{code}</code></pre>
   );
 }
 

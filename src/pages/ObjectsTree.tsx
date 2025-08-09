@@ -36,11 +36,11 @@ export default function ObjectsTree() {
       <div className="mx-auto max-w-7xl">
         <div className="mb-6 flex items-center justify-between gap-4">
           <h2 className="text-xl font-semibold text-white">Objects</h2>
-          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search objects, sources, products..." className="w-96 rounded-md border border-zinc-800 bg-zinc-900/40 px-3 py-2 text-sm text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-600" />
+          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search objects, sources, products..." className="input-glass w-96 focus:ring-[var(--ring)]" />
         </div>
       </div>
       <div className="">
-        <div className="mx-auto max-w-7xl rounded-xl border border-zinc-800 bg-zinc-900/40 p-4">
+        <div className="mx-auto max-w-7xl rounded-xl glass p-4">
           {filteredTree.length === 0 ? (
             <div className="text-sm text-zinc-400">No results.</div>
           ) : (
@@ -74,7 +74,7 @@ function TreeRow({ node, level }: { node: TreeNode; level: number }) {
   const isLeaf = !node.children || node.children.length === 0;
   return (
     <div className="group flex items-start gap-2">
-      <button onClick={() => setOpen((v) => !v)} className={`mt-0.5 h-5 w-5 shrink-0 rounded border border-zinc-700 text-xs leading-4 ${isLeaf ? "opacity-0" : "opacity-100"}`}>
+      <button onClick={() => setOpen((v) => !v)} className={`mt-0.5 h-5 w-5 shrink-0 rounded btn-ghost text-xs leading-4 ${isLeaf ? "opacity-0" : "opacity-100"}`}>
         {open ? "-" : "+"}
       </button>
       <div className="flex-1 rounded-md px-1 py-0.5 text-sm">

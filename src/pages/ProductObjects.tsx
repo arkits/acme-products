@@ -15,11 +15,11 @@ export default function ProductObjects() {
   }, [product]);
 
   return (
-    <section className="rounded-xl border border-zinc-800 bg-zinc-900/40">
-      <div className="border-b border-zinc-800 px-4 py-3 text-sm font-medium text-white">Aggregate Objects</div>
+    <section className="rounded-xl glass">
+      <div className="border-b border-zinc-800/60 px-4 py-3 text-sm font-medium text-white">Aggregate Objects</div>
       <div className="p-4 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
         {aggregateObjects.map((o, i) => (
-          <div key={i} className="rounded-md border border-zinc-800 bg-zinc-900/60 px-3 py-2 text-sm text-zinc-300">
+          <div key={i} className="rounded-md glass px-3 py-2 text-sm text-zinc-300">
             <div className="text-zinc-400 text-xs">{o.sourceName}</div>
             <div className="text-white">{o.objectName}</div>
           </div>

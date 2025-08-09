@@ -26,12 +26,12 @@ export default function Settings() {
         <p className="mt-1 text-sm text-zinc-400">Manage local data and seed content.</p>
       </div>
 
-      <section className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-4">
+      <section className="rounded-xl glass p-4">
         <div className="text-sm font-medium text-white">Seed Data</div>
         <p className="mt-1 text-sm text-zinc-400">Reset your local data to the default sample products.</p>
         <div className="mt-3 flex items-center gap-3">
-          <button onClick={handleResetSeed} className="rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-indigo-500">Reset to Seed</button>
-          <button onClick={handleDeleteAll} className="rounded-md border border-rose-700 bg-rose-900/30 px-3 py-1.5 text-sm text-rose-300 hover:bg-rose-900/50">Delete All</button>
+          <button onClick={handleResetSeed} className="btn-primary px-3 py-1.5">Reset to Seed</button>
+          <button onClick={handleDeleteAll} className="btn-ghost text-rose-300">Delete All</button>
           {status && <span className="text-xs text-zinc-400">{status}</span>}
         </div>
       </section>

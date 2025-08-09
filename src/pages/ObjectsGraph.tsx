@@ -19,13 +19,13 @@ export default function ObjectsGraph() {
       <div className="mx-auto max-w-7xl">
         <div className="mb-6 flex items-center justify-between gap-4">
           <h2 className="text-xl font-semibold text-white">Objects</h2>
-          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search objects..." className="w-96 rounded-md border border-zinc-800 bg-zinc-900/40 px-3 py-2 text-sm text-zinc-200 placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-indigo-600" />
+          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search objects..." className="input-glass w-96 focus:ring-[var(--ring)]" />
         </div>
       </div>
 
       <div className="mx-auto max-w-7xl space-y-4">
         {filtered.length === 0 ? (
-          <div className="rounded-xl border border-zinc-800 bg-zinc-900/40 p-6 text-sm text-zinc-400">No results.</div>
+          <div className="rounded-xl glass p-6 text-sm text-zinc-400">No results.</div>
         ) : (
           filtered.map((lob) => (
             <LobSection key={lob.lob} lob={lob} />
@@ -38,9 +38,9 @@ export default function ObjectsGraph() {
 
 function LobSection({ lob }: { lob: LobGroup }) {
   return (
-    <section className="rounded-xl border border-zinc-800 bg-zinc-900/40">
-      <div className="border-b border-zinc-800 px-4 py-3 text-sm font-medium text-white">{lob.lob}</div>
-      <div className="divide-y divide-zinc-800">
+    <section className="rounded-xl glass">
+      <div className="border-b border-zinc-800/60 px-4 py-3 text-sm font-medium text-white">{lob.lob}</div>
+      <div className="divide-y divide-zinc-800/60">
         {lob.products.map((pg) => (
           <ProductSection key={pg.productId} group={pg} />
         ))}
@@ -53,10 +53,10 @@ function ProductSection({ group }: { group: ProductGroup }) {
   return (
     <div>
       <div className="px-4 py-3 text-sm text-zinc-300">{group.productName}</div>
-      <div className="border-t border-zinc-800 p-4">
+      <div className="border-t border-zinc-800/60 p-4">
         <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {group.objects.map((obj) => (
-            <li key={obj.name} className="rounded-lg border border-zinc-800 bg-zinc-900/60">
+            <li key={obj.name} className="rounded-lg glass">
               <ObjectCard object={obj} />
             </li>
           ))}
@@ -73,14 +73,14 @@ function ObjectCard({ object }: { object: ProductObject }) {
   const [open, setOpen] = useState(false);
   return (
     <div>
-      <button onClick={() => setOpen((v) => !v)} className="flex w-full items-start justify-between gap-3 px-4 py-3 text-left hover:bg-zinc-900/70">
+      <button onClick={() => setOpen((v) => !v)} className="flex w-full items-start justify-between gap-3 px-4 py-3 text-left hover:bg-white/5">
         <div className="flex items-center gap-2">
           <span className="text-zinc-500">{open ? "▾" : "▸"}</span>
           <div>
             <div className="text-sm font-medium text-white">{object.name}</div>
             <div className="mt-1 flex flex-wrap gap-1">
               {object.sources.map((s) => (
-                <span key={`${s.name}-${s.kind}`} className="inline-flex items-center gap-1 rounded-md border border-zinc-700 bg-zinc-800/60 px-2 py-0.5 text-[11px] text-zinc-300">
+                <span key={`${s.name}-${s.kind}`} className="inline-flex items-center gap-1 rounded-md btn-ghost px-2 py-0.5 text-[11px]">
                   <span>{s.name}</span>
                   <span className={`rounded-sm px-1 ${s.kind === "dataset" ? "bg-emerald-900/40 text-emerald-300" : "bg-sky-900/40 text-sky-300"}`}>{s.kind}</span>
                 </span>
@@ -90,7 +90,7 @@ function ObjectCard({ object }: { object: ProductObject }) {
         </div>
       </button>
       {open && (
-        <div className="border-t border-zinc-800 p-3">
+        <div className="border-t border-zinc-800/60 p-3">
           <div className="text-xs font-medium text-zinc-300">Fields</div>
           <table className="mt-2 w-full text-left text-xs">
             <thead className="text-zinc-500">
@@ -98,7 +98,7 @@ function ObjectCard({ object }: { object: ProductObject }) {
             </thead>
             <tbody className="text-zinc-300">
               {object.fields.map((f, i) => (
-                <tr key={i} className="border-t border-zinc-800">
+                <tr key={i} className="border-t border-zinc-800/60">
                   <td className="px-1 py-1">{f.name}</td>
                   <td className="px-1 py-1 text-zinc-500">{f.type || "-"}</td>
                 </tr>

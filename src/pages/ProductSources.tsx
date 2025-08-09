@@ -5,11 +5,11 @@ export default function ProductSources() {
   const { product } = useOutletContext<ProductOutletContext>();
   const sources = [...product.dataSources].sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: "base" }));
   return (
-    <section className="rounded-xl border border-zinc-800 bg-zinc-900/40">
-      <div className="border-b border-zinc-800 px-4 py-3 text-sm font-medium text-white">Sources</div>
-      <div className="divide-y divide-slate-800">
+    <section className="rounded-xl glass">
+      <div className="border-b border-zinc-800/60 px-4 py-3 text-sm font-medium text-white">Sources</div>
+      <div className="divide-y divide-slate-800/60">
         {sources.map((ds) => (
-          <Link key={ds.id} to={`/product/${product.id}/sources/${ds.id}`} className="block p-4 hover:bg-zinc-900/60">
+          <Link key={ds.id} to={`/product/${product.id}/sources/${ds.id}`} className="block p-4 hover:bg-white/5">
             <div className="flex items-center justify-between gap-4">
               <div>
                 <div className="text-sm text-zinc-300 hover:text-white">{ds.name}</div>

@@ -26,7 +26,7 @@ export default function FileDropzone({ onTextLoaded, accept = ".json,.avsc" }: {
       onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
       onDragLeave={() => setDragging(false)}
       onDrop={(e) => { e.preventDefault(); setDragging(false); onFiles(e.dataTransfer.files); }}
-      className={`rounded-lg border ${isDragging ? "border-indigo-500 bg-indigo-500/10" : "border-zinc-800 bg-zinc-900/40"} p-4 text-sm text-zinc-400`}
+      className={`rounded-lg p-4 text-sm text-zinc-400 glass ${isDragging ? "ring-2 ring-indigo-500/40" : ""}`}
     >
       <div className="flex items-center justify-between gap-3">
         <div>
@@ -34,7 +34,7 @@ export default function FileDropzone({ onTextLoaded, accept = ".json,.avsc" }: {
           <div className="text-xs">Drag & drop or click to select ({accept})</div>
           {error && <div className="mt-2 text-xs text-rose-400">{error}</div>}
         </div>
-        <label className="inline-flex cursor-pointer items-center gap-2 rounded-md bg-zinc-800 px-3 py-1.5 text-xs text-zinc-200 hover:bg-zinc-700">
+        <label className="inline-flex cursor-pointer items-center gap-2 btn-ghost">
           <input type="file" className="hidden" accept={accept} onChange={(e) => onFiles(e.target.files)} />
           Browse...
         </label>
