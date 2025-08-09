@@ -34,12 +34,36 @@ export interface DataSource {
   schema?: DataSourceSchema;
 }
 
+export interface Owner {
+  name: string;
+  email: string;
+  team?: string;
+}
+
+export interface BusinessNeed {
+  id: UUID;
+  title: string;
+  description: string;
+  priority?: 'low' | 'medium' | 'high';
+}
+
+export interface UsageExample {
+  id: UUID;
+  name: string;
+  description: string;
+  code: string;
+  language?: string;
+}
+
 export interface DataProduct {
   id: UUID;
   name: string;
   description: string;
   lineOfBusiness: string;
   dataSources: DataSource[];
+  owner?: Owner;
+  businessNeeds?: BusinessNeed[];
+  usageExamples?: UsageExample[];
   createdAt: string; // ISO string
   updatedAt: string; // ISO string
 }

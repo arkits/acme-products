@@ -31,8 +31,7 @@ export default function SourceDetail() {
           <MetaItem label="Objects" value={String(ds.schema?.objects.length ?? 0)} />
           {ds.kind === "api" && (
             <>
-              <MetaItem label="Server" value={ds.schema?.serverUrl || "-"} />
-              <div className="rounded-md glass p-3">
+              <div className="rounded-md glass p-3 sm:col-span-1 lg:col-span-2">
                 <div className="text-xs text-zinc-400">Endpoints</div>
                 <div className="mt-1 text-sm text-zinc-200 space-y-1">
                   {(ds.schema?.endpoints || []).length > 0 ? (

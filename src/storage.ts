@@ -77,6 +77,18 @@ export function upsertProduct(input: UpsertProductInput, existingId?: UUID): Dat
   return product;
 }
 
+export function updateProduct(product: DataProduct): void {
+  const state = readState();
+  const idx = state.products.findIndex((p) => p.id === product.id);
+  if (idx >= 0) {
+    state.products[idx] = {
+      ...product,
+      updatedAt: new Date().toISOString()
+    };
+    writeState(state);
+  }
+}
+
 export function deleteProduct(id: UUID): void {
   const state = readState();
   state.products = state.products.filter((p) => p.id !== id);

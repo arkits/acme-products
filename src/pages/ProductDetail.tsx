@@ -23,7 +23,6 @@ export default function ProductDetail() {
             <span>{product.lineOfBusiness}</span>
           </div>
           <h2 className="mt-2 text-2xl font-semibold text-white">{product.name}</h2>
-          <p className="mt-1 max-w-3xl text-zinc-400">{product.description}</p>
         </div>
         <div className="flex items-center gap-3">
           <button
@@ -37,10 +36,12 @@ export default function ProductDetail() {
 
       <div>
         <div className="border-b border-zinc-800/60">
-          <div className="-mb-px flex items-center gap-6">
+          <div className="-mb-px flex items-center gap-6 overflow-x-auto">
+            <TabLink to="overview" label="Overview" />
+            <TabLink to="business-needs" label="Business Needs" />
             <TabLink to="sources" label="Sources" />
-            <TabLink to="objects" label="Objects" />
-            <TabLink to="consume" label="Consume" />
+            <TabLink to="data-dictionary" label="Data Dictionary" />
+            <TabLink to="usage-examples" label="Usage Examples" />
           </div>
         </div>
         <div className="pt-6">

@@ -184,6 +184,34 @@ export function makeSeedProducts(): DataProduct[] {
       name: "Core Banking - Transactions Hub",
       description: "Authoritative store for retail banking account and transaction data.",
       lineOfBusiness: "Retail Banking",
+      owner: {
+        name: "Sarah Chen",
+        email: "sarah.chen@bank.com",
+        team: "Core Banking Data"
+      },
+      businessNeeds: [
+        {
+          id: generateId("need"),
+          title: "Transaction Fraud Detection",
+          description: "Enable real-time fraud detection by providing comprehensive transaction data with account and customer context.",
+          priority: "high"
+        },
+        {
+          id: generateId("need"),
+          title: "Regulatory Reporting",
+          description: "Support compliance teams with accurate transaction reporting for regulatory audits and AML monitoring.",
+          priority: "high"
+        }
+      ],
+      usageExamples: [
+        {
+          id: generateId("example"),
+          name: "Daily Transaction Summary",
+          description: "Get a summary of all transactions for a specific date range",
+          code: "SELECT \n  DATE(timestamp) as transaction_date,\n  COUNT(*) as total_transactions,\n  SUM(amount) as total_amount,\n  AVG(amount) as avg_amount\nFROM txhub_transactions_ledger \nWHERE DATE(timestamp) BETWEEN '2024-01-01' AND '2024-01-31'\nGROUP BY DATE(timestamp)\nORDER BY transaction_date;",
+          language: "sql"
+        }
+      ],
       dataSources: [
         { id: generateId("ds"), name: "txhub_transactions_ledger", kind: "dataset", description: "Core banking transactions", schema: parseAvroSchema(transactionAvro) },
         { id: generateId("ds"), name: "txhub_accounts_dim", kind: "dataset", description: "Account master data", schema: parseAvroSchema(accountAvro) },

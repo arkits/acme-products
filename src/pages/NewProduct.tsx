@@ -111,9 +111,6 @@ export default function NewProduct() {
                 <div className="mt-1 text-white truncate">{draft.dataSources.find(ds => ds.kind === "api")?.schema?.firstGetEndpoint || "—"}</div>
               </div>
             </div>
-            <div className="mt-3 text-xs text-zinc-400">
-              Server: <span className="text-zinc-300">{draft.dataSources.find(ds => ds.kind === "api")?.schema?.serverUrl || "—"}</span>
-            </div>
           </div>
         </div>
       </div>
