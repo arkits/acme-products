@@ -20,8 +20,10 @@ export default function App() {
     seedIfEmpty(makeSeedProducts());
   }, []);
 
+  // Use Vite's BASE_URL as the router basename so links work under GitHub Pages subpath
+  const basename = (import.meta as any).env?.BASE_URL?.replace(/\/$/, "") || "/";
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={basename}>
       <Layout>
         <Routes>
           <Route path="/" element={<Browse />} />

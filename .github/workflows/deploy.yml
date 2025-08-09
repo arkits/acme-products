@@ -19,6 +19,10 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      # Override the Vite base path for GitHub Pages deployment
+      # Final site URL becomes https://arkits.github.io/acme-products/
+      DEPLOY_BASE_PATH: /acme-products/
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -39,11 +43,16 @@ jobs:
         id: base
         shell: bash
         run: |
-          REPO_NAME="${GITHUB_REPOSITORY#*/}"
-          if [[ "$REPO_NAME" == *.github.io ]]; then
-            echo "BASE_PATH=/" >> "$GITHUB_ENV"
+          if [[ -n "${DEPLOY_BASE_PATH}" ]]; then
+            echo "Using DEPLOY_BASE_PATH override: ${DEPLOY_BASE_PATH}"
+            echo "BASE_PATH=${DEPLOY_BASE_PATH}" >> "$GITHUB_ENV"
           else
-            echo "BASE_PATH=/$REPO_NAME/" >> "$GITHUB_ENV"
+            REPO_NAME="${GITHUB_REPOSITORY#*/}"
+            if [[ "$REPO_NAME" == *.github.io ]]; then
+              echo "BASE_PATH=/" >> "$GITHUB_ENV"
+            else
+              echo "BASE_PATH=/$REPO_NAME/" >> "$GITHUB_ENV"
+            fi
           fi
 
       - name: Type check
