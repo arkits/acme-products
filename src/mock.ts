@@ -201,6 +201,12 @@ export function makeSeedProducts(): DataProduct[] {
           title: "Regulatory Reporting",
           description: "Support compliance teams with accurate transaction reporting for regulatory audits and AML monitoring.",
           priority: "high"
+        },
+        {
+          id: generateId("need"),
+          title: "Dispute and Chargeback Investigation",
+          description: "Provide end-to-end transaction lineage, channel, and merchant context to accelerate dispute resolution and chargeback workflows.",
+          priority: "medium"
         }
       ],
       usageExamples: [
@@ -224,6 +230,26 @@ export function makeSeedProducts(): DataProduct[] {
       name: "Customer 360",
       description: "Unified customer profile across accounts, cards, and payments.",
       lineOfBusiness: "Retail Banking",
+      businessNeeds: [
+        {
+          id: generateId("need"),
+          title: "Next Best Offer & Personalization",
+          description: "Power personalized campaigns and cross-sell by unifying customer demographics, behaviors, and relationship data.",
+          priority: "high"
+        },
+        {
+          id: generateId("need"),
+          title: "Customer Lifetime Value Modeling",
+          description: "Support predictive CLV models by providing complete historical product usage and transaction summaries.",
+          priority: "medium"
+        },
+        {
+          id: generateId("need"),
+          title: "KYC/CDD Refresh Automation",
+          description: "Automate periodic KYC and due diligence refreshes using consolidated, high-quality identity and risk attributes.",
+          priority: "medium"
+        }
+      ],
       dataSources: [
         { id: generateId("ds"), name: "c360_customers_dim", kind: "dataset", description: "Customer master", schema: parseAvroSchema(customerAvro) },
         { id: generateId("ds"), name: "c360_accounts_api", kind: "api", description: "Accounts API", schema: parseOpenApi(accountsApi) },
@@ -236,6 +262,26 @@ export function makeSeedProducts(): DataProduct[] {
       name: "Cards Spend Analytics",
       description: "Cards portfolio spend and behavior analytics.",
       lineOfBusiness: "Cards",
+      businessNeeds: [
+        {
+          id: generateId("need"),
+          title: "Portfolio Performance & Revenue Reporting",
+          description: "Produce weekly portfolio KPIs (spend, interchange, revolve rate) for finance and product stakeholders.",
+          priority: "high"
+        },
+        {
+          id: generateId("need"),
+          title: "Merchant Category Optimization",
+          description: "Identify top MCCs and merchant partners to optimize rewards, offers, and partnerships.",
+          priority: "medium"
+        },
+        {
+          id: generateId("need"),
+          title: "Credit Line Increase Targeting",
+          description: "Enable risk-aware credit line increase targeting using spend stability and delinquency indicators.",
+          priority: "medium"
+        }
+      ],
       dataSources: [
         { id: generateId("ds"), name: "cards_cards_dim", kind: "dataset", description: "Card master", schema: parseAvroSchema(cardAvro) },
         { id: generateId("ds"), name: "cards_transactions_ledger", kind: "dataset", description: "Card transactions", schema: parseAvroSchema(transactionAvro) },
@@ -248,6 +294,26 @@ export function makeSeedProducts(): DataProduct[] {
       name: "Payments Fraud Monitor",
       description: "Real-time and batch analytics to detect fraudulent payments.",
       lineOfBusiness: "Payments",
+      businessNeeds: [
+        {
+          id: generateId("need"),
+          title: "Real-time Risk-based Blocking",
+          description: "Support millisecond scoring and configurable thresholds to block high-risk payments before authorization.",
+          priority: "high"
+        },
+        {
+          id: generateId("need"),
+          title: "Model Drift Monitoring",
+          description: "Continuously track feature distributions and outcome stability to detect drift and trigger retraining.",
+          priority: "medium"
+        },
+        {
+          id: generateId("need"),
+          title: "Case Prioritization",
+          description: "Prioritize investigation queues using explainability signals and customer value tiers.",
+          priority: "medium"
+        }
+      ],
       dataSources: [
         { id: generateId("ds"), name: "fraud_payments_ledger", kind: "dataset", description: "Payments events", schema: parseAvroSchema(paymentAvro) },
         { id: generateId("ds"), name: "fraud_transactions_ledger", kind: "dataset", description: "Transactions for patterns", schema: parseAvroSchema(transactionAvro) },
@@ -260,6 +326,26 @@ export function makeSeedProducts(): DataProduct[] {
       name: "AML Monitoring",
       description: "Anti-money laundering monitoring with alerts and case context.",
       lineOfBusiness: "Compliance",
+      businessNeeds: [
+        {
+          id: generateId("need"),
+          title: "SAR Preparation & Audit",
+          description: "Streamline Suspicious Activity Report preparation with consistent evidence and audit trails.",
+          priority: "high"
+        },
+        {
+          id: generateId("need"),
+          title: "Structuring Pattern Detection",
+          description: "Detect smurfing and structuring behaviors via linked accounts, time windows, and geo indicators.",
+          priority: "high"
+        },
+        {
+          id: generateId("need"),
+          title: "Sanctions Screening Escalation",
+          description: "Provide enriched context for positive matches to accelerate triage and reduce false positives.",
+          priority: "medium"
+        }
+      ],
       dataSources: [
         { id: generateId("ds"), name: "aml_transactions_ledger", kind: "dataset", description: "All transactions", schema: parseAvroSchema(transactionAvro) },
         { id: generateId("ds"), name: "aml_customers_dim", kind: "dataset", description: "Customer master", schema: parseAvroSchema(customerAvro) },
