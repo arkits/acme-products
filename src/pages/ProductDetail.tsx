@@ -1,12 +1,11 @@
-import { Link, NavLink, Outlet, useNavigate, useParams } from "react-router-dom";
-import { deleteProduct, getProductById } from "../storage";
+import { Link, NavLink, Outlet, useParams } from "react-router-dom";
+import { getProductById } from "../storage";
 import type { DataProduct } from "../types";
 
 export type ProductOutletContext = { product: DataProduct };
 
 export default function ProductDetail() {
   const { id } = useParams();
-  const navigate = useNavigate();
   const product = id ? getProductById(id) : undefined;
 
   if (!product) {
@@ -24,14 +23,7 @@ export default function ProductDetail() {
           </div>
           <h2 className="mt-2 text-2xl font-semibold text-white">{product.name}</h2>
         </div>
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => { if (confirm("Delete this product?")) { deleteProduct(product.id); navigate("/"); } }}
-            className="btn-ghost text-rose-300"
-          >
-            Delete
-          </button>
-        </div>
+        <div className="flex items-center gap-3"></div>
       </div>
 
       <div>
