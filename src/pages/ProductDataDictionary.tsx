@@ -7,6 +7,7 @@ import SideDrawer from "../components/SideDrawer";
 export default function ProductObjects() {
   const { product } = useOutletContext<ProductOutletContext>();
   const [selected, setSelected] = useState<{ object: SchemaObject; sourceName: string } | null>(null);
+  const [showFeaturedOnly, setShowFeaturedOnly] = useState(true);
 
   // No-op effect placeholder kept if future logic needed
   useEffect(() => {}, []);
@@ -16,13 +17,27 @@ export default function ProductObjects() {
       id: ds.id,
       name: ds.name,
       kind: ds.kind,
-      objects: (ds.schema?.objects || []).slice().sort((a, b) => (b.fields?.length || 0) - (a.fields?.length || 0)),
+      objects: (ds.schema?.objects || [])
+        .filter((o) => (showFeaturedOnly ? o.featured !== false : true))
+        .slice()
+        .sort((a, b) => (b.fields?.length || 0) - (a.fields?.length || 0)),
     }));
-  }, [product]);
+  }, [product, showFeaturedOnly]);
 
   return (
     <section className="rounded-xl glass">
-      <div className="border-b border-zinc-800/60 px-4 py-3 text-sm font-medium text-white">Data Dictionary</div>
+      <div className="border-b border-zinc-800/60 px-4 py-3 text-sm font-medium text-white flex items-center justify-between">
+        <div>Data Dictionary</div>
+        <label className="text-xs text-zinc-300 inline-flex items-center gap-2 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={showFeaturedOnly}
+            onChange={(e) => setShowFeaturedOnly(e.target.checked)}
+            className="accent-amber-400"
+          />
+          Featured only
+        </label>
+      </div>
       <div className="p-4 grid grid-cols-1 gap-4 md:grid-cols-2">
         {grouped.map((g) => (
           <div key={g.id} className="rounded-lg glass">

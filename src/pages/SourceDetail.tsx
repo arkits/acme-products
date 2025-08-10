@@ -1,13 +1,32 @@
 import { Link, useParams } from "react-router-dom";
-import { getProductById } from "../storage";
+import { useState, useMemo } from "react";
+import { getProductById, updateProduct } from "../storage";
 
 export default function SourceDetail() {
   const { id, dsId } = useParams();
-  const product = id ? getProductById(id) : undefined;
-  const ds = product?.dataSources.find((s) => s.id === dsId);
+  const [product, setProduct] = useState(() => (id ? getProductById(id) : undefined));
+  const ds = useMemo(() => product?.dataSources.find((s) => s.id === dsId), [product, dsId]);
 
   if (!product || !ds) {
     return <div className="text-slate-400">Not found. <Link className="text-sky-400" to={`/product/${id}/sources`}>Back to Sources</Link></div>;
+  }
+
+  function toggleFeatured(objectName: string) {
+    if (!product || !dsId) return;
+    const updated = {
+      ...product,
+      dataSources: product.dataSources.map((s) => {
+        if (s.id !== dsId) return s;
+        const schema = s.schema;
+        if (!schema) return s;
+        const nextObjects = (schema.objects || []).map((o) =>
+          o.name === objectName ? { ...o, featured: !(o.featured ?? true) } : o
+        );
+        return { ...s, schema: { ...schema, objects: nextObjects } };
+      }),
+    };
+    updateProduct(updated);
+    setProduct(getProductById(updated.id));
   }
 
   return (
@@ -57,7 +76,20 @@ export default function SourceDetail() {
             .sort((a, b) => (b.fields?.length || 0) - (a.fields?.length || 0))
             .map((obj, i) => (
             <div key={i} className="rounded-md glass">
-              <div className="border-b border-zinc-800/60 px-3 py-2 text-sm font-medium text-zinc-200">{obj.name}</div>
+              <div className="border-b border-zinc-800/60 px-3 py-2 text-sm font-medium text-zinc-200 flex items-center justify-between">
+                <div>{obj.name}</div>
+                <button
+                  type="button"
+                  onClick={() => toggleFeatured(obj.name)}
+                  className="text-xs rounded px-2 py-0.5 hover:bg-white/5"
+                  title={(obj.featured ?? true) ? "Unfeature" : "Feature"}
+                >
+                  <span className={(obj.featured ?? true) ? "text-amber-400" : "text-zinc-500"}>
+                    {(obj.featured ?? true) ? "★" : "☆"}
+                  </span>
+                  <span className="ml-1 align-middle">Featured</span>
+                </button>
+              </div>
               <div className="p-3 overflow-x-auto">
                 {obj.fields && obj.fields.length > 0 ? (
                   <table className="min-w-full text-left text-xs">

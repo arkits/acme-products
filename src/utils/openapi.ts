@@ -42,7 +42,7 @@ export function parseOpenApi(raw: string): DataSourceSchema {
       const typeVal = pRec && typeof pRec.type === 'string' ? String(pRec.type) : 'object';
       fields.push({ name: pname, type: typeVal });
     }
-    objects.push({ name, fields });
+    objects.push({ name, fields, featured: true });
   }
 
   // Endpoints collection and first GET endpoint for curl

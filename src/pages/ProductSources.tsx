@@ -120,7 +120,7 @@ export default function ProductSources() {
           )}
           {draft.schema && (
             <div className="mt-3 rounded-md glass p-3">
-              <div className="mb-2 text-xs text-zinc-400">Parsed objects: {draft.schema.objects.length}</div>
+           <div className="mb-2 text-xs text-zinc-400">Parsed objects: {draft.schema.objects.length}</div>
               <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                 {draft.schema.objects.slice(0, 6).map((o, i) => (
                   <div key={i} className="rounded-md glass px-3 py-2 text-sm text-zinc-300">

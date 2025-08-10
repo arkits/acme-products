@@ -12,8 +12,9 @@ type LobGroup = { lob: string; products: ProductGroup[] };
 export default function ObjectsGraph() {
   const products = getAllProducts();
   const [query, setQuery] = useState("");
+  const [showFeaturedOnly, setShowFeaturedOnly] = useState(true);
 
-  const groups = useMemo<LobGroup[]>(() => buildGroups(products), [products]);
+  const groups = useMemo<LobGroup[]>(() => buildGroups(products, showFeaturedOnly), [products, showFeaturedOnly]);
   const filtered = useMemo(() => filterGroups(groups, query), [groups, query]);
 
   return (
@@ -21,8 +22,19 @@ export default function ObjectsGraph() {
       <div className="mx-auto max-w-7xl">
         <div className="mb-6 flex items-center justify-between gap-4">
           <h2 className="text-xl font-semibold text-white whitespace-nowrap">Data Dictionary</h2>
-          <div className="w-72 flex-none">
-            <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search objects..." className="input-glass w-full focus:ring-[var(--ring)]" />
+          <div className="flex items-center gap-3">
+            <label className="text-xs text-zinc-300 inline-flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={showFeaturedOnly}
+                onChange={(e) => setShowFeaturedOnly(e.target.checked)}
+                className="accent-amber-400"
+              />
+              Featured only
+            </label>
+            <div className="w-72 flex-none">
+              <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search objects..." className="input-glass w-full focus:ring-[var(--ring)]" />
+            </div>
           </div>
         </div>
       </div>
@@ -124,7 +136,7 @@ function ObjectCard({ object, productId }: { object: ProductObject; productId: s
   );
 }
 
-function buildGroups(products: ReturnType<typeof getAllProducts>): LobGroup[] {
+function buildGroups(products: ReturnType<typeof getAllProducts>, featuredOnly: boolean): LobGroup[] {
   const lobMap = new Map<string, Map<string, ProductGroup>>();
   for (const p of products) {
     const lob = p.lineOfBusiness || "General";
@@ -138,6 +150,7 @@ function buildGroups(products: ReturnType<typeof getAllProducts>): LobGroup[] {
     for (const ds of p.dataSources) {
       const objs = ds.schema?.objects || [];
       for (const o of objs) {
+        if (featuredOnly && o.featured === false) continue;
         const existing = objectMap.get(o.name);
         const fields = o.fields || [];
         if (!existing) {

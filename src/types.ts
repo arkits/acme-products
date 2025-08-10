@@ -24,6 +24,7 @@ export interface SchemaObject {
   name: string;
   description?: string;
   fields?: SchemaObjectField[];
+  featured?: boolean;
 }
 
 export interface DataSource {
