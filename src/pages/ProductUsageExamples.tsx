@@ -498,7 +498,7 @@ function generateMockResponse(example: UsageExample): string {
 
 function extractTableFromSql(sql: string): string | null {
   // naive FROM <table> parser
-  const match = sql.match(/from\s+([a-zA-Z0-9_\.\-]+)/i);
+  const match = sql.match(/from\s+([a-zA-Z0-9_.-]+)/i);
   return match ? match[1] : null;
 }
 
