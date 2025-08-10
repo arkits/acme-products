@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import type { ProductOutletContext } from "./ProductDetail";
 import type { UsageExample } from "../types";
@@ -281,16 +281,10 @@ export default function ProductUsageExamples() {
                         </div>
                       </>
                     ) : (
-                      <>
-                        <p className="text-sm text-zinc-300">{example.description}</p>
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className="text-xs text-zinc-400">Language:</span>
-                          <span className={`rounded-md px-2 py-1 text-xs border ${getLanguageColor(example.language)}`}>
-                            {example.language?.toUpperCase()}
-                          </span>
-                        </div>
-                        <CodeBlock code={example.code} language={example.language} />
-                      </>
+                      <UsageExampleView
+                        example={example}
+                        languageColorClass={getLanguageColor(example.language)}
+                      />
                     )}
                   </div>
                 </div>
@@ -362,4 +356,183 @@ function CodeBlock({ code, language }: { code: string; language?: string }) {
       </pre>
     </div>
   );
+}
+
+function UsageExampleView({
+  example,
+  languageColorClass,
+}: {
+  example: UsageExample;
+  languageColorClass: string;
+}) {
+  const [copied, setCopied] = useState(false);
+  const [isRunning, setIsRunning] = useState(false);
+  const [response, setResponse] = useState<string | null>(null);
+
+  const languageLabel = useMemo(() => example.language?.toUpperCase() || "PLAINTEXT", [example.language]);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(example.code);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1200);
+    } catch {
+      // no-op
+    }
+  };
+
+  const handleRun = async () => {
+    setIsRunning(true);
+    // Simulate latency
+    await new Promise((r) => setTimeout(r, 400));
+    const mock = generateMockResponse(example);
+    setResponse(mock);
+    setIsRunning(false);
+  };
+
+  return (
+    <>
+      <p className="text-sm text-zinc-300">{example.description}</p>
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-zinc-400">Language:</span>
+          <span className={`rounded-md px-2 py-1 text-xs border ${languageColorClass}`}>
+            {languageLabel}
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <button onClick={handleCopy} className="btn-ghost text-xs px-2 py-1" title="Copy code">
+            <span className="inline-flex items-center gap-1">
+              <CopyIcon />
+              {copied ? "Copied" : "Copy"}
+            </span>
+          </button>
+          <button onClick={handleRun} className="btn-primary text-xs px-2 py-1" title="Run example" disabled={isRunning}>
+            <span className="inline-flex items-center gap-1">
+              <PlayIcon spinning={isRunning} />
+              {isRunning ? "Running" : "Run"}
+            </span>
+          </button>
+        </div>
+      </div>
+      <CodeBlock code={example.code} language={example.language} />
+      {isRunning && (
+        <div className="mt-3">
+          <div className="mb-1 text-xs text-zinc-400">Mock Response</div>
+          <div className="code-block rounded-md overflow-hidden">
+            <div className="progress-track">
+              <div className="progress-indicator" />
+            </div>
+            <div className="p-3 space-y-2">
+              <div className="h-3 bg-zinc-800 rounded animate-pulse" />
+              <div className="h-3 bg-zinc-800 rounded animate-pulse w-5/6" />
+              <div className="h-3 bg-zinc-800 rounded animate-pulse w-4/6" />
+              <div className="h-3 bg-zinc-800 rounded animate-pulse w-3/6" />
+            </div>
+          </div>
+        </div>
+      )}
+      {!isRunning && response && (
+        <div className="mt-3">
+          <div className="mb-1 text-xs text-zinc-400">Mock Response</div>
+          <CodeBlock code={response} language="json" />
+        </div>
+      )}
+    </>
+  );
+}
+
+function CopyIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className="w-4 h-4"
+    >
+      <path d="M16 1H6a2 2 0 0 0-2 2v10h2V3h10V1zm3 4H10a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 14H10V7h9v12z" />
+    </svg>
+  );
+}
+
+function PlayIcon({ spinning }: { spinning?: boolean }) {
+  return (
+    <span className={`inline-flex items-center ${spinning ? 'animate-pulse' : ''}`}>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        className="w-4 h-4 mr-0.5"
+      >
+        <path d="M8 5v14l11-7L8 5z" />
+      </svg>
+    </span>
+  );
+}
+
+function generateMockResponse(example: UsageExample): string {
+  const language = (example.language || '').toLowerCase();
+  if (language === 'sql') {
+    const table = extractTableFromSql(example.code);
+    const rows = generateRowsForTable(table, 3);
+    return JSON.stringify(rows, null, 2);
+  }
+  if (language === 'curl' || language === 'bash' || language === 'shell') {
+    const payload = {
+      status: 200,
+      data: {
+        id: "acct_123",
+        customer_id: "cust_456",
+        balance: 1024.55,
+        currency: "USD",
+      },
+      meta: { request_id: "req_abc" },
+    };
+    return JSON.stringify(payload, null, 2);
+  }
+  if (language === 'python' || language === 'javascript' || language === 'ts' || language === 'typescript') {
+    return JSON.stringify({ result: "Success", items: [1, 2, 3] }, null, 2);
+  }
+  return JSON.stringify({ output: "Example executed.", length: example.code.length }, null, 2);
+}
+
+function extractTableFromSql(sql: string): string | null {
+  // naive FROM <table> parser
+  const match = sql.match(/from\s+([a-zA-Z0-9_\.\-]+)/i);
+  return match ? match[1] : null;
+}
+
+function generateRowsForTable(table: string | null, count: number): Array<Record<string, unknown>> {
+  const fields = inferFieldsFromTableName(table);
+  const rows: Array<Record<string, unknown>> = [];
+  for (let i = 0; i < count; i++) {
+    const row: Record<string, unknown> = {};
+    for (const f of fields) {
+      row[f] = sampleValueForField(f, i);
+    }
+    rows.push(row);
+  }
+  return rows;
+}
+
+function inferFieldsFromTableName(table: string | null): string[] {
+  if (!table) return ["id", "name", "value"];
+  if (table.includes("transaction")) return ["transaction_id", "account_id", "amount", "currency", "timestamp"];
+  if (table.includes("account")) return ["account_id", "customer_id", "balance", "currency", "opened_at"];
+  if (table.includes("customer")) return ["customer_id", "first_name", "last_name", "email", "created_at"];
+  return ["id", "name", "value"];
+}
+
+function sampleValueForField(field: string, i: number): unknown {
+  const now = new Date().toISOString();
+  if (field.includes("id")) return `${field.slice(0, 3)}_${1000 + i}`;
+  if (field.includes("amount") || field.includes("balance")) return Number((Math.random() * 1000).toFixed(2));
+  if (field.includes("currency")) return "USD";
+  if (field.includes("first_name")) return ["Alex", "Sam", "Jordan"][i % 3];
+  if (field.includes("last_name")) return ["Chen", "Singh", "Garcia"][i % 3];
+  if (field.includes("email")) return `user${i}@example.com`;
+  if (field.includes("opened") || field.includes("created") || field.includes("timestamp")) return now;
+  if (field.includes("name")) return `Item ${i + 1}`;
+  if (field.includes("value")) return i + 1;
+  return null;
 }
