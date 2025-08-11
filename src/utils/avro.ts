@@ -44,7 +44,7 @@ export function parseAvroSchema(raw: string): DataSourceSchema {
         const fieldType = getTypeString(f.type);
         return { name: fieldName, type: fieldType };
       });
-      objects.push({ name, fields, featured: true });
+      objects.push({ name, fields, featured: fields.length > 1 });
     }
     // Recurse through nested types/fields
     const nestedFields = (n.fields as unknown) ?? (isObject(n.type) ? (n.type as Record<string, unknown>).fields : undefined);
