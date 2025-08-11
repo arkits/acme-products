@@ -67,8 +67,31 @@ export function parseOpenApi(raw: string): DataSourceSchema {
 }
 
 export function openApiCurlSnippets(name: string, serverUrl?: string, endpoint?: string): CurlSnippet[] {
-  const base = serverUrl || "https://api.acme.example";
-  const path = endpoint || "/v1/resource";
+  const sanitizeBaseUrl = (input?: string): string => {
+    const fallback = "https://api.acme.example";
+    if (!input) return fallback;
+    const trimmed = String(input).trim();
+    // Guard against literal "undefined"/"null" and non-http(s) protocols
+    if (!trimmed || /^(undefined|null)$/i.test(trimmed)) return fallback;
+    try {
+      const url = new URL(trimmed.startsWith("http") ? trimmed : `https://${trimmed}`);
+      // strip trailing slash for clean concatenation
+      url.pathname = url.pathname.replace(/\/$/, "");
+      return url.toString().replace(/\/$/, "");
+    } catch {
+      return fallback;
+    }
+  };
+
+  const normalizePath = (p?: string): string => {
+    const fallbackPath = "/v1/resource";
+    const candidate = (p ?? fallbackPath).trim();
+    if (!candidate) return fallbackPath;
+    return candidate.startsWith("/") ? candidate : `/${candidate}`;
+  };
+
+  const base = sanitizeBaseUrl(serverUrl);
+  const path = normalizePath(endpoint);
   return [
     { title: `GET ${name}`, body: `curl -s '${base}${path}' | jq '.'` },
     { title: "POST (example)", body: `curl -s -X POST '${base}${path}' -H 'Content-Type: application/json' -d '{"foo":"bar"}'` },
